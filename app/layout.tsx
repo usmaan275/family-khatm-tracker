@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
 
   title: {
-    default: "🐐 Jomshed Miah Family Khatm Tracker",
-    template: "%s | 🐐 Family Khatm Tracker",
+    default: "Jomshed Miah Family Khatm Tracker 🐐",
+    template: "%s | Family Khatm Tracker",
   },
 
   description:
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "🐐 Jomshed Miah Family Khatm Tracker",
+    title: "Jomshed Miah Family Khatm Tracker 🐐",
 
     description:
       "Track Quran khatms and dhikr goals together as a family.",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
 
-    title: "🐐 Jomshed Miah Family Khatm Tracker",
+    title: "Jomshed Miah Family Khatm Tracker 🐐",
 
     description:
       "Track Quran khatms and dhikr goals together as a family.",
