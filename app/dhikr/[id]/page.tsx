@@ -146,14 +146,6 @@ export default function DhikrPage({
   return (
     <main className="min-h-screen bg-[#070B14] text-white p-6">
 
-      {/* Back button */}
-      <button
-        onClick={() => router.back()}
-        className="text-gray-300 hover:text-white transition"
-      >
-        ← Back
-      </button>
-
       {/* Header */}
       <div className="mb-8">
 

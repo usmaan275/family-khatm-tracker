@@ -152,14 +152,6 @@ export default function QuranPage({
   return (
     <main className="min-h-screen bg-[#070B14] text-white p-6">
 
-      {/* Back */}
-      <button
-        onClick={() => router.back()}
-        className="text-gray-300 hover:text-white transition"
-      >
-        ← Back
-      </button>
-
       {/* Title */}
       <h1 className="text-2xl font-bold mt-3">
         {khatmTitle || "Quran Khatm"}
