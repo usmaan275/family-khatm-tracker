@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
+export const dynamic = "force-dynamic"
 
 export default async function Home() {
 
@@ -7,6 +8,7 @@ export default async function Home() {
     .from("elements")
     .select("*")
     .order("created_at", { ascending: false })
+    .throwOnError()
 
   const { data: quranData } = await supabase
     .from("quran_juz")
