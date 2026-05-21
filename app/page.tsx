@@ -116,7 +116,11 @@ export default async function Home() {
 
                   <p className="text-xs mt-3 text-gray-500">
                     Created{" "}
-                    {new Date(item.created_at).toLocaleDateString()}
+                    {new Date(item.created_at).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric"
+                    })}
                   </p>
 
                 </div>
@@ -164,7 +168,23 @@ export default async function Home() {
                   </h3>
 
                   <p className="text-sm text-gray-400 mt-1">
-                    Completed
+                    Created:{" "}
+                    {new Date(item.created_at).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric"
+                    })}
+                  </p>
+
+                  <p className="text-sm text-gray-400">
+                    Completed:{" "}
+                    {item.completed_at
+                      ? new Date(item.completed_at).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric"
+                        })
+                      : "—"}
                   </p>
 
                 </div>

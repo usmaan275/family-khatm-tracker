@@ -89,7 +89,10 @@ export default function DhikrPage({
 
       await supabase
         .from("elements")
-        .update({ status: "completed" })
+        .update({
+            status: "completed",
+            completed_at: new Date().toISOString()
+          })
         .eq("id", id)
     }
   }
