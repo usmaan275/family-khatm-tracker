@@ -114,10 +114,21 @@ export default function QuranPage({
   
     const allDone = data?.every((j) => j.completed === true)
   
-    if (allDone && data?.length === 30) {
+    const { data: element } = await supabase
+    .from("elements")
+    .select("status, completed_at")
+    .eq("id", id)
+    .single()
+
+    const alreadyCompleted = element?.status === "completed"
+
+    if (allDone && data?.length === 30 && !alreadyCompleted) {
       await supabase
         .from("elements")
-        .update({ status: "completed" })
+        .update({
+            status: "completed",
+            completed_at: new Date().toISOString()
+          })
         .eq("id", id)
     }
   

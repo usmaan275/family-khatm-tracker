@@ -85,8 +85,15 @@ export default function DhikrPage({
 
     if (!event) return
 
-    if (totalAmount >= event.target) {
+    const { data: element } = await supabase
+    .from("elements")
+    .select("status, completed_at")
+    .eq("id", id)
+    .single()
 
+    const alreadyCompleted = element?.status === "completed"
+
+    if (totalAmount >= event.target && !alreadyCompleted) {
       await supabase
         .from("elements")
         .update({
