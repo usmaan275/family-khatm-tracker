@@ -169,7 +169,7 @@ export default async function Home() {
                     {item.title}
                   </h3>
 
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-xs mt-3 text-gray-500">
                     Created:{" "}
                     {new Date(item.created_at).toLocaleString("en-GB", {
                       day: "2-digit",
@@ -178,7 +178,7 @@ export default async function Home() {
                     })}
                   </p>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs mt-3 text-gray-500">
                     Completed:{" "}
                     {item.completed_at
                       ? new Date(item.completed_at).toLocaleString("en-GB", {
