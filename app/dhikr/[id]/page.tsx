@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
 
 type Contribution = {
   id: string
@@ -306,11 +307,22 @@ export default function DhikrPage({
 
         ) : (
 
-          [...contributions]
+          <AnimatePresence>
+          {[...contributions]
             .sort((a, b) => b.amount - a.amount)
             .map((entry) => (
 
-              <div
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  layout: {
+                    type: "spring",
+                    stiffness: 350,
+                    damping: 30,
+                  },
+                }}
                 key={entry.id}
                 className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 flex items-center gap-3"
               >
@@ -415,8 +427,10 @@ export default function DhikrPage({
                   +1
                 </button>
 
-              </div>
-            ))
+              </motion.div>
+              
+            ))}
+            </AnimatePresence>
         )}
 
       </div>
@@ -445,8 +459,19 @@ export default function DhikrPage({
           placeholder="Amount"
           value={newAmount}
           onChange={(e) =>
-            setNewAmount(e.target.value)
+            setNewAmount(
+              e.target.value.replace(/\D/g, "")
+            )
           }
+          onKeyDown={(e) => {
+            if (
+              ["e", "E", "+", "-", "."].includes(
+                e.key
+              )
+            ) {
+              e.preventDefault()
+            }
+          }}
           className="w-full p-3 mb-4 rounded-xl bg-[#1F2937] text-white"
         />
 
