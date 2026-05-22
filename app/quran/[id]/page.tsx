@@ -132,10 +132,11 @@ export default function QuranPage({
         .eq("id", id)
     }
   
-    setSaving(false)
-  
     router.push("/")
-    router.refresh()
+
+    setTimeout(() => {
+      router.refresh()
+    }, 100)
   }
 
   if (loading) {
@@ -151,6 +152,34 @@ export default function QuranPage({
 
   return (
     <main className="min-h-screen bg-[#070B14] text-white p-6">
+
+    {/* Top Bar */}
+    <div className="flex items-center justify-between">
+
+      {/* Back */}
+      <button
+        onClick={() => {
+          router.back()
+
+          setTimeout(() => {
+            router.refresh()
+          }, 100)
+        }}
+        className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+      >
+        Back
+      </button>
+
+      {/* Done */}
+      <button
+        onClick={handleDone}
+        disabled={saving}
+        className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+      >
+        {saving ? "Saving..." : "Done"}
+      </button>
+
+    </div>
 
       {/* Title */}
       <h1 className="text-2xl font-bold mt-3">
@@ -217,7 +246,7 @@ export default function QuranPage({
           <button
             onClick={handleDone}
             disabled={saving}
-            className="w-full bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold"
+            className="w-full bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold disabled:opacity-70"
           >
             {saving ? "Saving..." : "Done"}
           </button>
