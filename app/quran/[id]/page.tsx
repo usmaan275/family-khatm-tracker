@@ -98,8 +98,13 @@ export default function QuranPage({
       return supabase
         .from("quran_juz")
         .update({
-          assigned_name: localNames[juz.id] ?? juz.assigned_name,
-          completed: localCompleted[juz.id] ?? juz.completed,
+          assigned_name:
+            localNames[juz.id] ??
+            juz.assigned_name,
+  
+          completed:
+            localCompleted[juz.id] ??
+            juz.completed,
         })
         .eq("id", juz.id)
     })
@@ -112,28 +117,36 @@ export default function QuranPage({
       .select("completed")
       .eq("element_id", id)
   
-    const allDone = data?.every((j) => j.completed === true)
+    const allDone = data?.every(
+      (j) => j.completed === true
+    )
   
-    const { data: element } = await supabase
-    .from("elements")
-    .select("status, completed_at")
-    .eq("id", id)
-    .single()
-
-    const alreadyCompleted = element?.status === "completed"
-
-    if (allDone && data?.length === 30 && !alreadyCompleted) {
+    if (allDone && data?.length === 30) {
+  
+      /* Mark completed */
       await supabase
         .from("elements")
         .update({
-            status: "completed",
-            completed_at: new Date().toISOString()
-          })
+          status: "completed",
+          completed_at:
+            new Date().toISOString(),
+        })
+        .eq("id", id)
+  
+    } else {
+  
+      /* Revert back to active */
+      await supabase
+        .from("elements")
+        .update({
+          status: "active",
+          completed_at: null,
+        })
         .eq("id", id)
     }
   
     router.push("/")
-
+  
     setTimeout(() => {
       router.refresh()
     }, 100)

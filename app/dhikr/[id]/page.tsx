@@ -178,29 +178,47 @@ export default function DhikrPage({
   async function checkDhikrCompletion(
     totalAmount: number
   ) {
-
+  
     if (!event) return
-
+  
     const { data: element } = await supabase
       .from("elements")
-      .select("status, completed_at")
+      .select("status")
       .eq("id", id)
       .single()
-
-    const alreadyCompleted =
+  
+    const isCompleted =
       element?.status === "completed"
-
+  
+    /* SHOULD COMPLETE */
     if (
       totalAmount >= event.target &&
-      !alreadyCompleted
+      !isCompleted
     ) {
-
+  
       await supabase
         .from("elements")
         .update({
           status: "completed",
           completed_at:
             new Date().toISOString(),
+        })
+        .eq("id", id)
+  
+      return
+    }
+  
+    /* SHOULD REVERT BACK TO ACTIVE */
+    if (
+      totalAmount < event.target &&
+      isCompleted
+    ) {
+  
+      await supabase
+        .from("elements")
+        .update({
+          status: "active",
+          completed_at: null,
         })
         .eq("id", id)
     }
