@@ -312,10 +312,10 @@ export default function DhikrPage({
 
               <div
                 key={entry.id}
-                className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 flex gap-3 items-center"
+                className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 flex items-center gap-3"
               >
 
-                {/* Editable Name */}
+                {/* Name */}
                 <input
                   type="text"
                   value={entry.name}
@@ -346,79 +346,74 @@ export default function DhikrPage({
                       })
                       .eq("id", entry.id)
                   }}
-                  className="flex-1 bg-[#1F2937] rounded-xl p-2 text-white"
+                  className="flex-[1.4] min-w-0 bg-[#1F2937] rounded-xl p-2 text-white"
                 />
 
-                {/* Amount + Increment */}
-                <div className="flex items-center gap-2">
+                {/* Amount */}
+                <input
+                  type="number"
+                  value={entry.amount}
+                  onChange={(e) => {
 
-                  {/* Editable Amount */}
-                  <input
-                    type="number"
-                    value={entry.amount}
-                    onChange={(e) => {
-
-                      const updated =
-                        contributions.map((c) =>
-                          c.id === entry.id
-                            ? {
-                                ...c,
-                                amount: Number(
-                                  e.target.value
-                                ),
-                              }
-                            : c
-                        )
-
-                      setContributions(updated)
-                    }}
-                    onBlur={async (e) => {
-
-                      const newAmount =
-                        Number(e.target.value)
-
-                      await supabase
-                        .from(
-                          "dhikr_contributions"
-                        )
-                        .update({
-                          amount:
-                            newAmount,
-                        })
-                        .eq("id", entry.id)
-
-                      const updatedTotal =
-                        contributions.reduce(
-                          (sum, item) =>
-                            item.id ===
-                            entry.id
-                              ? sum +
-                                newAmount
-                              : sum +
-                                item.amount,
-                          0
-                        )
-
-                      checkDhikrCompletion(
-                        updatedTotal
+                    const updated =
+                      contributions.map((c) =>
+                        c.id === entry.id
+                          ? {
+                              ...c,
+                              amount: Number(
+                                e.target.value
+                              ),
+                            }
+                          : c
                       )
-                    }}
-                    className="w-24 bg-[#1F2937] rounded-xl p-2 text-green-400 text-right"
-                  />
 
-                  {/* +1 */}
-                  <button
-                    onClick={() =>
-                      incrementContribution(
-                        entry
+                    setContributions(updated)
+                  }}
+                  onBlur={async (e) => {
+
+                    const newAmount =
+                      Number(e.target.value)
+
+                    await supabase
+                      .from(
+                        "dhikr_contributions"
                       )
-                    }
-                    className="px-3 py-2 rounded-xl bg-green-600 hover:bg-green-500 transition font-semibold"
-                  >
-                    +1
-                  </button>
+                      .update({
+                        amount:
+                          newAmount,
+                      })
+                      .eq("id", entry.id)
 
-                </div>
+                    const updatedTotal =
+                      contributions.reduce(
+                        (sum, item) =>
+                          item.id ===
+                          entry.id
+                            ? sum +
+                              newAmount
+                            : sum +
+                              item.amount,
+                        0
+                      )
+
+                    checkDhikrCompletion(
+                      updatedTotal
+                    )
+                  }}
+                  className="w-24 bg-[#1F2937] rounded-xl p-2 text-green-400 text-right"
+                />
+
+                {/* +1 */}
+                <button
+                  onClick={() =>
+                    incrementContribution(
+                      entry
+                    )
+                  }
+                  className="bg-green-600 hover:bg-green-500 transition px-3 py-2 rounded-xl font-semibold whitespace-nowrap"
+                >
+                  +1
+                </button>
 
               </div>
             ))
@@ -458,21 +453,21 @@ export default function DhikrPage({
         {/* Buttons */}
         <div className="flex gap-3">
 
-        {/* +1 */}
-        <button
-          onClick={() => {
+          {/* +1 */}
+          <button
+            onClick={() => {
 
-            const current =
-              Number(newAmount || 0)
+              const current =
+                Number(newAmount || 0)
 
-            setNewAmount(
-              String(current + 1)
-            )
-          }}
-          className="flex-1 bg-[#1F2937] hover:bg-[#374151] transition py-3 rounded-xl font-semibold"
-        >
-          +1
-        </button>
+              setNewAmount(
+                String(current + 1)
+              )
+            }}
+            className="flex-1 bg-[#1F2937] hover:bg-[#374151] transition py-3 rounded-xl font-semibold"
+          >
+            +1
+          </button>
 
           {/* Add */}
           <button
