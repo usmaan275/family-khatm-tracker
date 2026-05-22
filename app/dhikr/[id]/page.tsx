@@ -208,12 +208,16 @@ export default function DhikrPage({
       {/* Back */}
       <button
         onClick={() => {
-          router.back()
+
+          setLeaving(true)
+
+          router.push("/")
 
           setTimeout(() => {
             router.refresh()
           }, 100)
         }}
+        disabled={leaving}
         className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
       >
         Back
