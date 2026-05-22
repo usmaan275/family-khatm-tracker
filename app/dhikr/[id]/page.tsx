@@ -39,6 +39,7 @@ export default function DhikrPage({
 
   const [saving, setSaving] = useState(false)
   const [leaving, setLeaving] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchData()
@@ -243,14 +244,9 @@ export default function DhikrPage({
         {/* Back */}
         <button
           onClick={() => {
-
             setLeaving(true)
-
             router.push("/")
-
-            setTimeout(() => {
-              router.refresh()
-            }, 100)
+            setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
           className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
@@ -261,14 +257,9 @@ export default function DhikrPage({
         {/* Done */}
         <button
           onClick={() => {
-
             setLeaving(true)
-
             router.push("/")
-
-            setTimeout(() => {
-              router.refresh()
-            }, 100)
+            setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
           className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
@@ -308,129 +299,109 @@ export default function DhikrPage({
         ) : (
 
           <AnimatePresence>
-          {[...contributions]
-            .sort((a, b) => b.amount - a.amount)
-            .map((entry) => (
+            {[...contributions]
+              .sort((a, b) => b.amount - a.amount)
+              .map((entry) => {
 
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  layout: {
-                    type: "spring",
-                    stiffness: 350,
-                    damping: 30,
-                  },
-                }}
-                key={entry.id}
-                className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 flex items-center gap-3"
-              >
+                const isEditing = editingId === entry.id
 
-                {/* Name */}
-                <input
-                  type="text"
-                  value={entry.name}
-                  onChange={(e) => {
+                return (
+                  <motion.div
+                    key={entry.id}
+                    layout={!isEditing}   // ✅ IMPORTANT: disable animation while typing
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      layout: {
+                        type: "spring",
+                        stiffness: 350,
+                        damping: 30,
+                      },
+                    }}
+                    className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 flex items-center gap-3"
+                  >
 
-                    const updated =
-                      contributions.map((c) =>
-                        c.id === entry.id
-                          ? {
-                              ...c,
-                              name:
-                                e.target.value,
-                            }
-                          : c
-                      )
+                    {/* Name */}
+                    <input
+                      type="text"
+                      value={entry.name}
+                      onFocus={() => setEditingId(entry.id)}
+                      onBlur={async (e) => {
+                        setEditingId(null)
 
-                    setContributions(updated)
-                  }}
-                  onBlur={async (e) => {
+                        await supabase
+                          .from("dhikr_contributions")
+                          .update({
+                            name: e.target.value,
+                          })
+                          .eq("id", entry.id)
+                      }}
+                      onChange={(e) => {
+                        const updated =
+                          contributions.map((c) =>
+                            c.id === entry.id
+                              ? { ...c, name: e.target.value }
+                              : c
+                          )
+                        setContributions(updated)
+                      }}
+                      className="flex-[1.4] min-w-0 bg-[#1F2937] rounded-xl p-2 text-white"
+                    />
 
-                    await supabase
-                      .from(
-                        "dhikr_contributions"
-                      )
-                      .update({
-                        name:
-                          e.target.value,
-                      })
-                      .eq("id", entry.id)
-                  }}
-                  className="flex-[1.4] min-w-0 bg-[#1F2937] rounded-xl p-2 text-white"
-                />
+                    {/* Amount */}
+                    <input
+                      type="number"
+                      value={entry.amount}
+                      onFocus={() => setEditingId(entry.id)}
+                      onBlur={async (e) => {
+                        setEditingId(null)
 
-                {/* Amount */}
-                <input
-                  type="number"
-                  value={entry.amount}
-                  onChange={(e) => {
+                        const newAmount = Number(e.target.value)
 
-                    const updated =
-                      contributions.map((c) =>
-                        c.id === entry.id
-                          ? {
-                              ...c,
-                              amount: Number(
-                                e.target.value
-                              ),
-                            }
-                          : c
-                      )
+                        await supabase
+                          .from("dhikr_contributions")
+                          .update({
+                            amount: newAmount,
+                          })
+                          .eq("id", entry.id)
 
-                    setContributions(updated)
-                  }}
-                  onBlur={async (e) => {
+                        const updatedTotal =
+                          contributions.reduce(
+                            (sum, item) =>
+                              item.id === entry.id
+                                ? sum + newAmount
+                                : sum + item.amount,
+                            0
+                          )
 
-                    const newAmount =
-                      Number(e.target.value)
+                        checkDhikrCompletion(updatedTotal)
+                      }}
+                      onChange={(e) => {
+                        const updated =
+                          contributions.map((c) =>
+                            c.id === entry.id
+                              ? { ...c, amount: Number(e.target.value) }
+                              : c
+                          )
+                        setContributions(updated)
+                      }}
+                      className="w-24 bg-[#1F2937] rounded-xl p-2 text-green-400 text-right"
+                    />
 
-                    await supabase
-                      .from(
-                        "dhikr_contributions"
-                      )
-                      .update({
-                        amount:
-                          newAmount,
-                      })
-                      .eq("id", entry.id)
+                    {/* +1 */}
+                    <button
+                      onClick={() =>
+                        incrementContribution(entry)
+                      }
+                      className="bg-green-600 hover:bg-green-500 transition px-3 py-2 rounded-xl font-semibold whitespace-nowrap"
+                    >
+                      +1
+                    </button>
 
-                    const updatedTotal =
-                      contributions.reduce(
-                        (sum, item) =>
-                          item.id ===
-                          entry.id
-                            ? sum +
-                              newAmount
-                            : sum +
-                              item.amount,
-                        0
-                      )
-
-                    checkDhikrCompletion(
-                      updatedTotal
-                    )
-                  }}
-                  className="w-24 bg-[#1F2937] rounded-xl p-2 text-green-400 text-right"
-                />
-
-                {/* +1 */}
-                <button
-                  onClick={() =>
-                    incrementContribution(
-                      entry
-                    )
-                  }
-                  className="bg-green-600 hover:bg-green-500 transition px-3 py-2 rounded-xl font-semibold whitespace-nowrap"
-                >
-                  +1
-                </button>
-
-              </motion.div>
-              
-            ))}
-            </AnimatePresence>
+                  </motion.div>
+                )
+              })}
+          </AnimatePresence>
         )}
 
       </div>
@@ -464,11 +435,7 @@ export default function DhikrPage({
             )
           }
           onKeyDown={(e) => {
-            if (
-              ["e", "E", "+", "-", "."].includes(
-                e.key
-              )
-            ) {
+            if (["e", "E", "+", "-", "."].includes(e.key)) {
               e.preventDefault()
             }
           }}
@@ -481,13 +448,8 @@ export default function DhikrPage({
           {/* +1 */}
           <button
             onClick={() => {
-
-              const current =
-                Number(newAmount || 0)
-
-              setNewAmount(
-                String(current + 1)
-              )
+              const current = Number(newAmount || 0)
+              setNewAmount(String(current + 1))
             }}
             className="flex-1 bg-[#1F2937] hover:bg-[#374151] transition py-3 rounded-xl font-semibold"
           >
@@ -500,9 +462,7 @@ export default function DhikrPage({
             disabled={saving}
             className="flex-1 bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold"
           >
-            {saving
-              ? "Adding..."
-              : "Add Contribution"}
+            {saving ? "Adding..." : "Add Contribution"}
           </button>
 
         </div>
@@ -514,14 +474,9 @@ export default function DhikrPage({
 
         <button
           onClick={() => {
-
             setLeaving(true)
-
             router.push("/")
-
-            setTimeout(() => {
-              router.refresh()
-            }, 100)
+            setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
           className="w-full bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold disabled:opacity-70"
