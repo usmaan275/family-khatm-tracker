@@ -40,7 +40,6 @@ export default function DhikrPage({
   const [saving, setSaving] = useState(false)
   const [leaving, setLeaving] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [openSwipeId, setOpenSwipeId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchData()
@@ -225,23 +224,6 @@ export default function DhikrPage({
     }
   }
 
-  async function deleteContribution(id: string) {
-
-    /* Instant local removal */
-    setContributions((prev) =>
-      prev.filter((c) => c.id !== id)
-    )
-  
-    const { error } = await supabase
-      .from("dhikr_contributions")
-      .delete()
-      .eq("id", id)
-  
-    if (error) {
-      console.error(error)
-    }
-  }
-
   /* Total */
   const total = contributions.reduce(
     (sum, item) => sum + item.amount,
@@ -251,36 +233,6 @@ export default function DhikrPage({
   useEffect(() => {
     checkDhikrCompletion(total)
   }, [contributions])
-
-  useEffect(() => {
-
-    function closeSwipe() {
-      setOpenSwipeId(null)
-    }
-  
-    window.addEventListener(
-      "scroll",
-      closeSwipe
-    )
-  
-    window.addEventListener(
-      "touchstart",
-      closeSwipe
-    )
-  
-    return () => {
-      window.removeEventListener(
-        "scroll",
-        closeSwipe
-      )
-  
-      window.removeEventListener(
-        "touchstart",
-        closeSwipe
-      )
-    }
-  
-  }, [])
 
   if (!event) {
 
@@ -372,168 +324,99 @@ export default function DhikrPage({
                 const isEditing = editingId === entry.id
 
                 return (
-
-                  <div
+                  <motion.div
                     key={entry.id}
-                    className="relative overflow-hidden rounded-2xl"
+                    layout={!isEditing}   // ✅ IMPORTANT: disable animation while typing
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      layout: {
+                        type: "spring",
+                        stiffness: 350,
+                        damping: 30,
+                      },
+                    }}
+                    className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 flex items-center gap-3"
                   >
 
-                    {/* Delete Background */}
-                    <div
-                      className={`
-                        absolute top-0.5 bottom-0.5 right-0 left-0
-                        bg-[#5B1C1C]
-                        flex items-center justify-end pr-4
-                        transition-opacity duration-200
-                        ${openSwipeId === entry.id
-                          ? "opacity-100"
-                          : "opacity-0"}
-                      `}
+                    {/* Name */}
+                    <input
+                      type="text"
+                      value={entry.name}
+                      onFocus={() => setEditingId(entry.id)}
+                      onBlur={async (e) => {
+                        setEditingId(null)
+
+                        await supabase
+                          .from("dhikr_contributions")
+                          .update({
+                            name: e.target.value,
+                          })
+                          .eq("id", entry.id)
+                      }}
+                      onChange={(e) => {
+                        const updated =
+                          contributions.map((c) =>
+                            c.id === entry.id
+                              ? { ...c, name: e.target.value }
+                              : c
+                          )
+                        setContributions(updated)
+                      }}
+                      className="flex-[1.4] min-w-0 bg-[#1F2937] rounded-xl p-2 text-white"
+                    />
+
+                    {/* Amount */}
+                    <input
+                      type="number"
+                      value={entry.amount}
+                      onFocus={() => setEditingId(entry.id)}
+                      onBlur={async (e) => {
+                        setEditingId(null)
+
+                        const newAmount = Number(e.target.value)
+
+                        await supabase
+                          .from("dhikr_contributions")
+                          .update({
+                            amount: newAmount,
+                          })
+                          .eq("id", entry.id)
+
+                        const updatedTotal =
+                          contributions.reduce(
+                            (sum, item) =>
+                              item.id === entry.id
+                                ? sum + newAmount
+                                : sum + item.amount,
+                            0
+                          )
+
+                        checkDhikrCompletion(updatedTotal)
+                      }}
+                      onChange={(e) => {
+                        const updated =
+                          contributions.map((c) =>
+                            c.id === entry.id
+                              ? { ...c, amount: Number(e.target.value) }
+                              : c
+                          )
+                        setContributions(updated)
+                      }}
+                      className="w-24 bg-[#1F2937] rounded-xl p-2 text-green-400 text-right"
+                    />
+
+                    {/* +1 */}
+                    <button
+                      onClick={() =>
+                        incrementContribution(entry)
+                      }
+                      className="bg-green-600 hover:bg-green-500 transition px-3 py-2 rounded-xl font-semibold whitespace-nowrap"
                     >
+                      +1
+                    </button>
 
-                      <button
-                        onClick={() =>
-                          deleteContribution(entry.id)
-                        }
-                        className="text-white font-semibold"
-                      >
-                        Delete
-                      </button>
-
-                    </div>
-
-                    <motion.div
-                      layout={!isEditing}
-                      drag="x"
-                      dragConstraints={{
-                        left: -120,
-                        right: 0,
-                      }}
-                      dragElastic={0.08}
-                      animate={{
-                        x:
-                          openSwipeId === entry.id
-                            ? -100
-                            : 0,
-                        opacity: 1,
-                        scale: 1,
-                      }}
-                      whileDrag={{
-                        scale: 0.98,
-                      }}
-                      initial={{
-                        opacity: 0,
-                        scale: 0.96,
-                        x: 0,
-                      }}
-                      onDragEnd={(e, info) => {
-
-                        if (info.offset.x < -70) {
-                          setOpenSwipeId(entry.id)
-                        } else {
-                          setOpenSwipeId(null)
-                        }
-                      }}
-                      transition={{
-                        layout: {
-                          type: "spring",
-                          stiffness: 350,
-                          damping: 30,
-                        },
-                        x: {
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 35,
-                        },
-                      }}
-                      className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 flex items-center gap-3 relative z-10"
-                    >
-
-                      {/* Name */}
-                      <input
-                        type="text"
-                        value={entry.name}
-                        onFocus={() => setEditingId(entry.id)}
-                        onBlur={async (e) => {
-                          setEditingId(null)
-
-                          await supabase
-                            .from("dhikr_contributions")
-                            .update({
-                              name: e.target.value,
-                            })
-                            .eq("id", entry.id)
-                        }}
-                        onChange={(e) => {
-                          const updated =
-                            contributions.map((c) =>
-                              c.id === entry.id
-                                ? { ...c, name: e.target.value }
-                                : c
-                            )
-
-                          setContributions(updated)
-                        }}
-                        className="flex-[1.4] min-w-0 bg-[#1F2937] rounded-xl p-2 text-white"
-                      />
-
-                      {/* Amount */}
-                      <input
-                        type="number"
-                        value={entry.amount}
-                        onFocus={() => setEditingId(entry.id)}
-                        onBlur={async (e) => {
-                          setEditingId(null)
-
-                          const newAmount = Number(e.target.value)
-
-                          await supabase
-                            .from("dhikr_contributions")
-                            .update({
-                              amount: newAmount,
-                            })
-                            .eq("id", entry.id)
-
-                          const updatedTotal =
-                            contributions.reduce(
-                              (sum, item) =>
-                                item.id === entry.id
-                                  ? sum + newAmount
-                                  : sum + item.amount,
-                              0
-                            )
-
-                          checkDhikrCompletion(updatedTotal)
-                        }}
-                        onChange={(e) => {
-                          const updated =
-                            contributions.map((c) =>
-                              c.id === entry.id
-                                ? {
-                                    ...c,
-                                    amount: Number(e.target.value),
-                                  }
-                                : c
-                            )
-
-                          setContributions(updated)
-                        }}
-                        className="w-24 bg-[#1F2937] rounded-xl p-2 text-green-400 text-right"
-                      />
-
-                      {/* +1 */}
-                      <button
-                        onClick={() =>
-                          incrementContribution(entry)
-                        }
-                        className="bg-green-600 hover:bg-green-500 transition px-3 py-2 rounded-xl font-semibold whitespace-nowrap"
-                      >
-                        +1
-                      </button>
-
-                    </motion.div>
-
-                  </div>
+                  </motion.div>
                 )
               })}
           </AnimatePresence>
