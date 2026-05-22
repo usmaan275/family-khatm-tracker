@@ -89,7 +89,7 @@ export default async function Home() {
                 }
               >
 
-                <div className="p-4 bg-[#111827] border border-[#1F2937] rounded-2xl shadow-lg hover:border-green-600 transition cursor-pointer">
+                <div className="p-4 bg-[#111827] border border-[#1F2937] rounded-2xl shadow-lg hover:border-green-600 transition cursor-pointer my-4">
 
                   <h3 className="font-semibold text-lg">
                     {item.title}
@@ -168,6 +168,27 @@ export default async function Home() {
                   <h3 className="font-semibold">
                     {item.title}
                   </h3>
+                  
+                  <p className="text-sm text-gray-400 mt-1">
+                    {item.type === "quran"
+                      ? "Quran Khatm"
+                      : item.dhikr_text}
+                  </p>
+
+                  {/* Quran Progress */}
+                  {item.type === "quran" && (
+                    <p className="text-sm mt-2 text-green-400">
+                      {getQuranProgress(item.id)} / 30 completed
+                    </p>
+                  )}
+
+                  {/* Dhikr Progress */}
+                  {item.type === "dhikr" && (
+                    <p className="text-sm mt-2 text-green-400">
+                      {getDhikrTotal(item.id).toLocaleString()} /{" "}
+                      {item.target?.toLocaleString()}
+                    </p>
+                  )}
 
                   <p className="text-xs mt-3 text-gray-500">
                     Created:{" "}
