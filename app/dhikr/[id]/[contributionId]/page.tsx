@@ -496,7 +496,7 @@ export default function TasbihPage({
             bg-green-600
             active:scale-[0.95]
             hover:scale-[1.02]
-            transition-transform duration-250 ease-out
+            transition-transform duration-400 ease-out
             shadow-[0_0_40px_rgba(34,197,94,0.3)]
             transition
             shadow-2xl
