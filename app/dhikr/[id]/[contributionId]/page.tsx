@@ -349,7 +349,7 @@ export default function TasbihPage({
             }, 100)
           }}
           disabled={leaving}
-          className="w-20 h-10 text-sm rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+          className="w-18 h-10 text-sm rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
         >
           {leaving ? "..." : "Done"}
         </button>
@@ -368,7 +368,7 @@ export default function TasbihPage({
         {/* Delete */}
         <button
           onClick={() => setShowDeleteModal(true)}
-          className="w-20 h-10 text-sm rounded-lg bg-[#5B1C1C] hover:bg-[#6B2222] transition text-white font-medium"
+          className="w-18 h-10 text-sm rounded-lg bg-[#5B1C1C] hover:bg-[#6B2222] transition text-white font-medium"
         >
           Delete
         </button>
