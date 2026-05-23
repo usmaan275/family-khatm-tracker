@@ -191,7 +191,7 @@ export default function EditPage({
 
         <button
           onClick={() => router.push("/")}
-          className="px-4 py-2 rounded-xl bg-[#111827] border border-[#1F2937]"
+          className="w-24 py-2 rounded-xl bg-[#111827] border border-[#1F2937] hover:bg-gray-700 hover:text-white transition"
         >
           Back
         </button>
@@ -203,7 +203,7 @@ export default function EditPage({
         <button
           onClick={save}
           disabled={saving}
-          className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-500 transition"
+          className="w-24 py-2 rounded-xl bg-green-600 hover:bg-green-500 transition"
         >
           {saving ? "Saving..." : "Done"}
         </button>
