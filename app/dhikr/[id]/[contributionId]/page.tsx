@@ -371,7 +371,7 @@ export default function TasbihPage({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center justify-between h-100vh">
+      <div className="flex flex-col items-center justify-between h-100dvh">
 
         {/* Editable Info */}
         <div className="w-full max-w-2xl flex gap-3 mb-4">
