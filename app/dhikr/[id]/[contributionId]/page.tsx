@@ -346,7 +346,6 @@ export default function TasbihPage({
 
         {/* Center */}
         <div className="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none max-w-[55%]">
-
           <h1 className="font-bold text-lg md:text-2xl truncate">
             {event.title}
           </h1>
@@ -355,7 +354,6 @@ export default function TasbihPage({
             {total.toLocaleString()} /{" "}
             {event.target.toLocaleString()}
           </p>
-
         </div>
 
         {/* Delete */}
