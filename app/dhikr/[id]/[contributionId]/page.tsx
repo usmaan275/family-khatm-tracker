@@ -67,10 +67,10 @@ export default function TasbihPage({
     function updateSize() {
 
       const width =
-        window.innerWidth * 0.92
+        window.innerWidth * 0.9
 
       const height =
-        (window.innerHeight - 280) * 0.92
+        (window.innerHeight - 290) * 0.9
 
       setCounterSize(
         Math.min(width, height)
@@ -389,9 +389,9 @@ export default function TasbihPage({
               bg-[#111827]
               border border-[#1F2937]
               rounded-2xl
-              px-6 py-5
+              px-3 py-2
               text-center
-              text-2xl
+              text-xl
               text-white
               leading-loose
               ${arabicFont.className}
