@@ -9,6 +9,7 @@ import {
 
 import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
+import { arabicFont } from "@/lib/fonts"
 
 type Contribution = {
   id: string
@@ -69,7 +70,7 @@ export default function TasbihPage({
         window.innerWidth * 0.92
 
       const height =
-        (window.innerHeight - 260) * 0.95
+        (window.innerHeight - 280) * 0.92
 
       setCounterSize(
         Math.min(width, height)
@@ -376,7 +377,29 @@ export default function TasbihPage({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center max-h-[95dvh]">
+      <div className="flex flex-col items-center min-h-[95dvh]">
+
+        {/* Dhikr Text */}
+        <div className="flex items-end">
+          <div
+            className={`
+              w-full
+              max-w-2xl
+              mb-4
+              bg-[#111827]
+              border border-[#1F2937]
+              rounded-2xl
+              px-6 py-5
+              text-center
+              text-2xl
+              text-white
+              leading-loose
+              ${arabicFont.className}
+            `}
+          >
+            {event?.dhikr_text}
+          </div>
+        </div>
 
         {/* Editable Info */}
         <div className="w-full max-w-2xl flex gap-3 mb-4">
