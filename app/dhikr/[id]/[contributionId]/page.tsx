@@ -299,10 +299,23 @@ export default function TasbihPage({
       0
     )
 
+    useEffect(() => {
+      const originalBody = document.body.style.cssText
+      const originalHtml = document.documentElement.style.cssText
+    
+      document.body.style.cssText = "overflow:hidden; position:fixed; width:100%;"
+      document.documentElement.style.cssText = "overflow:hidden; height:100%;"
+    
+      return () => {
+        document.body.style.cssText = originalBody
+        document.documentElement.style.cssText = originalHtml
+      }
+    }, [])
+
   if (!event || !contribution) {
 
     return (
-      <main className="min-h-screen bg-[#070B14] flex items-center justify-center text-white overflow-hidden">
+      <main className="min-h-screen bg-[#070B14] flex items-center justify-center text-white">
 
         <div className="text-center">
 
@@ -369,7 +382,7 @@ export default function TasbihPage({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center max-h-[70dvh]">
+      <div className="flex flex-col items-center max-h-[90dvh]">
 
         {/* Editable Info */}
         <div className="w-full max-w-2xl flex gap-3 mb-4">
