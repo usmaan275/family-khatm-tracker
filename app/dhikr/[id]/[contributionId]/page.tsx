@@ -546,12 +546,12 @@ export default function TasbihPage({
           <div className="relative z-10 w-[90%] max-w-sm bg-[#111827] border border-[#1F2937] rounded-3xl p-6">
 
             <h2 className="text-xl font-bold mb-2 text-center">
-              Delete Contribution?
+              Delete User
             </h2>
 
             <p className="text-gray-400 text-center mb-6">
               This will remove the user
-              from the leaderboard.
+              from the leaderboard. Are you sure you want to do this?
             </p>
 
             <div className="flex gap-3">
