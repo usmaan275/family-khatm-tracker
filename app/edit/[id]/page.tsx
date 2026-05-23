@@ -358,7 +358,7 @@ export default function EditPage({
           onClick={() => setShowDelete(true)}
           className="w-full bg-[#5B1C1C] hover:bg-red-700 transition py-3 rounded-xl"
         >
-          Delete Event
+          Delete Khatm
         </button>
 
         {showDelete && (
@@ -366,7 +366,7 @@ export default function EditPage({
             <div className="bg-[#111827] p-6 rounded-2xl border border-[#1F2937] w-[90%] max-w-sm">
 
               <p className="mb-4 text-center">
-                Are you sure you want to delete this event?
+                Are you sure you want to delete this khatm?
               </p>
 
               <div className="flex gap-3">
