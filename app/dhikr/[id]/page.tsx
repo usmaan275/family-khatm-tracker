@@ -141,40 +141,6 @@ export default function DhikrPage({
     setSaving(false)
   }
 
-  async function incrementContribution(
-    entry: Contribution
-  ) {
-
-    const newAmount = entry.amount + 1
-
-    /* Instant local update */
-    setContributions((prev) =>
-      prev.map((c) =>
-        c.id === entry.id
-          ? {
-              ...c,
-              amount: newAmount,
-            }
-          : c
-      )
-    )
-
-    /* Database update */
-    const { error } = await supabase
-      .from("dhikr_contributions")
-      .update({
-        amount: newAmount,
-      })
-      .eq("id", entry.id)
-
-    if (error) {
-      console.error(error)
-      return
-    }
-
-    checkDhikrCompletion(total + 1)
-  }
-
   async function checkDhikrCompletion(
     totalAmount: number
   ) {
@@ -406,14 +372,16 @@ export default function DhikrPage({
                       className="w-24 bg-[#1F2937] rounded-xl p-2 text-green-400 text-right"
                     />
 
-                    {/* +1 */}
+                    {/* Tasbih */}
                     <button
                       onClick={() =>
-                        incrementContribution(entry)
+                        router.push(
+                          `/dhikr/${id}/${entry.id}`
+                        )
                       }
                       className="bg-green-600 hover:bg-green-500 transition px-3 py-2 rounded-xl font-semibold whitespace-nowrap"
                     >
-                      +1
+                      📿
                     </button>
 
                   </motion.div>

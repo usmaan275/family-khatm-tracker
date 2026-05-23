@@ -88,7 +88,7 @@ export default function CreatePage() {
         <button
           onClick={() => setType("quran")}
           className={`px-4 py-2 rounded ${
-            type === "quran" ? "bg-green-600 text-white" : "bg-red"
+            type === "quran" ? "bg-green-600 text-white" : "bg-[#1F2937] text-gray-300"
           }`}
         >
           Quran Khatm
@@ -97,7 +97,7 @@ export default function CreatePage() {
         <button
           onClick={() => setType("dhikr")}
           className={`px-4 py-2 rounded ${
-            type === "dhikr" ? "bg-green-600 text-white" : "bg-red"
+            type === "dhikr" ? "bg-green-600 text-white" : "bg-[#1F2937] text-gray-300"
           }`}
         >
           Dhikr Khatm
@@ -107,7 +107,7 @@ export default function CreatePage() {
       {/* Title */}
       <input
         className="w-full p-3 mb-4 rounded-xl bg-[#111827] border border-[#1F2937] text-white placeholder-gray-400"
-        placeholder="Title (e.g. Family Quran Khatm for Nanu)"
+        placeholder="Title (e.g. Family Khatm for Mum)"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
