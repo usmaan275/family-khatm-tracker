@@ -335,12 +335,11 @@ export default function TasbihPage({
     <main className="min-h-screen bg-[#070B14] text-white px-5 py-5 overflow-hidden">
 
       {/* Top Bar */}
-      <div className="relative flex items-center justify-between mb-8 min-h-[44px]">
+      <div className="relative flex items-center justify-between mb-6 min-h-[44px]">
 
         {/* Done */}
         <button
           onClick={() => {
-
             setLeaving(true)
 
             router.push(`/dhikr/${id}`)
@@ -350,31 +349,26 @@ export default function TasbihPage({
             }, 100)
           }}
           disabled={leaving}
-          className="w-18 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+          className="w-20 h-10 text-sm rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
         >
-          {leaving
-            ? "Saving..."
-            : "Done"}
+          {leaving ? "..." : "Done"}
         </button>
 
         {/* Center */}
-        <div className="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none max-w-[55%]">
-          <h1 className="font-bold text-lg md:text-2xl truncate">
+        <div className="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none max-w-[60%]">
+          <h1 className="font-semibold text-base md:text-lg truncate leading-tight">
             {event.title}
           </h1>
 
-          <p className="text-green-400 text-sm md:text-base mt-1">
-            {total.toLocaleString()} /{" "}
-            {event.target.toLocaleString()}
+          <p className="text-green-400 text-xs md:text-sm mt-0.5">
+            {total.toLocaleString()} / {event.target.toLocaleString()}
           </p>
         </div>
 
         {/* Delete */}
         <button
-          onClick={() =>
-            setShowDeleteModal(true)
-          }
-          className="z-10 w-18 py-2 rounded-xl bg-[#5B1C1C] hover:bg-[#6B2222] transition"
+          onClick={() => setShowDeleteModal(true)}
+          className="w-20 h-10 text-sm rounded-lg bg-[#5B1C1C] hover:bg-[#6B2222] transition text-white font-medium"
         >
           Delete
         </button>
@@ -382,7 +376,7 @@ export default function TasbihPage({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center max-h-[90dvh]">
+      <div className="flex flex-col items-center max-h-[95dvh]">
 
         {/* Editable Info */}
         <div className="w-full max-w-2xl flex gap-3 mb-4">
@@ -487,10 +481,10 @@ export default function TasbihPage({
             items-center
             justify-center
             select-none
-            mt-4
-            mb-4
+            mt-1
+            mb-1
             shrink-0
-            fixed bottom-8 left-1/2 -translate-x-1/2
+            fixed bottom-4 left-1/2 -translate-x-1/2
             w-[min(320px,90vw)]
             aspect-square
           "
