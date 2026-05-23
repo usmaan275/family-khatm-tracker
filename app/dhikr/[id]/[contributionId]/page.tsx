@@ -494,10 +494,10 @@ export default function TasbihPage({
           className="
             rounded-full
             bg-green-600
-            active:scale-[0.98]
-            hover:scale-[1.01]
+            active:scale-[0.95]
+            hover:scale-[1.02]
             transition-transform duration-150
-            shadow-[0_0_40px_rgba(34,197,94,0.25)]
+            shadow-[0_0_40px_rgba(34,197,94,0.4)]
             transition
             shadow-2xl
             flex
