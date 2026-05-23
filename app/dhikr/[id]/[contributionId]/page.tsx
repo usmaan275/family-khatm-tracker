@@ -337,7 +337,7 @@ export default function TasbihPage({
             }, 100)
           }}
           disabled={leaving}
-          className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+          className="w-24 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
         >
           {leaving
             ? "Saving..."
@@ -361,7 +361,7 @@ export default function TasbihPage({
           onClick={() =>
             setShowDeleteModal(true)
           }
-          className="z-10 px-4 py-2 rounded-xl bg-[#5B1C1C] hover:bg-[#6B2222] transition"
+          className="z-10 w-24 py-2 rounded-xl bg-[#5B1C1C] hover:bg-[#6B2222] transition"
         >
           Delete
         </button>
@@ -369,7 +369,7 @@ export default function TasbihPage({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center justify-between h-100dvh">
+      <div className="flex flex-col items-center max-h-[90dvh]">
 
         {/* Editable Info */}
         <div className="w-full max-w-2xl flex gap-3 mb-4">
@@ -465,15 +465,21 @@ export default function TasbihPage({
             rounded-full
             bg-green-600
             active:scale-[0.98]
+            hover:scale-[1.01]
+            transition-transform duration-150
+            shadow-[0_0_40px_rgba(34,197,94,0.25)]
             transition
             shadow-2xl
             flex
             items-center
             justify-center
             select-none
-            mt-6
-            mb-6
+            mt-4
+            mb-4
             shrink-0
+            fixed bottom-8 left-1/2 -translate-x-1/2
+            w-[min(320px,90vw)]
+            aspect-square
           "
         >
 
