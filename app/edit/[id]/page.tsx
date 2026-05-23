@@ -278,7 +278,24 @@ export default function EditPage({
           </p>
 
           <div
-            onClick={() => createdDateRef.current?.showPicker?.()}
+            onClick={() => {
+              const el = createdDateRef.current
+              if (!el) return
+            
+              // Chrome / Edge (best path)
+              if (typeof el.showPicker === "function") {
+                el.showPicker()
+                return
+              }
+            
+              // Safari fallback
+              el.focus()
+            
+              // last resort attempt
+              setTimeout(() => {
+                el.click()
+              }, 0)
+            }}
             className="w-full bg-[#1F2937] p-3 rounded-xl text-white cursor-pointer"
           >
             {event.created_at
@@ -293,7 +310,7 @@ export default function EditPage({
           <input
             ref={createdDateRef}
             type="date"
-            className="hidden"
+            className="opacity-0 absolute pointer-events-none"
             value={
               event.created_at
                 ? new Date(event.created_at)
@@ -328,7 +345,24 @@ export default function EditPage({
             </p>
 
             <div
-              onClick={() => completedDateRef.current?.showPicker?.()}
+              onClick={() => {
+                const el = completedDateRef.current
+                if (!el) return
+              
+                // Chrome / Edge (best path)
+                if (typeof el.showPicker === "function") {
+                  el.showPicker()
+                  return
+                }
+              
+                // Safari fallback
+                el.focus()
+              
+                // last resort attempt
+                setTimeout(() => {
+                  el.click()
+                }, 0)
+              }}
               className="w-full bg-[#1F2937] p-3 rounded-xl text-white cursor-pointer"
             >
               {event.completed_at
@@ -343,7 +377,7 @@ export default function EditPage({
             <input
               ref={completedDateRef}
               type="date"
-              className="hidden"
+              className="opacity-0 absolute pointer-events-none"
               value={
                 event.completed_at
                   ? new Date(event.completed_at)
