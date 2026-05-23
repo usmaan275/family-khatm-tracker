@@ -507,7 +507,7 @@ export default function TasbihPage({
             mt-1
             mb-1
             shrink-0
-            fixed bottom-4 left-1/2 -translate-x-1/2
+            fixed bottom-2 left-1/2 -translate-x-1/2
             w-[min(320px,90vw)]
             aspect-square
           "
