@@ -248,7 +248,7 @@ export default function EditPage({
               type="number"
               value={event.target ?? 0}
               onChange={(e) => updateTarget(Number(e.target.value))}
-              className="w-full bg-[#1F2937] p-3 rounded-xl text-white text-green-400 font-bold"
+              className="w-full bg-[#1F2937] p-3 rounded-xl text-white text-green-400"
             />
           </div>
         )}
