@@ -448,7 +448,7 @@ export default function DhikrPage({
             disabled={saving}
             className="flex-1 bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold"
           >
-            {saving ? "Adding..." : "Add Contribution"}
+            {saving ? "Adding..." : "Add"}
           </button>
 
         </div>

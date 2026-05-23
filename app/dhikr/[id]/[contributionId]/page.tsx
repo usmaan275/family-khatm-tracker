@@ -520,7 +520,7 @@ export default function TasbihPage({
             </div>
 
             <div className="text-5xl font-bold">
-              {contribution.amount.toLocaleString()}
+              +
             </div>
 
           </div>
