@@ -324,7 +324,7 @@ export default function TasbihPage({
       {/* Top Bar */}
       <div className="relative flex items-center justify-between mb-8 min-h-[44px]">
 
-        {/* Back */}
+        {/* Done */}
         <button
           onClick={() => {
 
@@ -337,11 +337,11 @@ export default function TasbihPage({
             }, 100)
           }}
           disabled={leaving}
-          className="z-10 px-4 py-2 rounded-xl bg-[#111827] border border-[#1F2937] hover:bg-[#1F2937] transition"
+          className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
         >
           {leaving
-            ? "Returning..."
-            : "Back"}
+            ? "Saving..."
+            : "Done"}
         </button>
 
         {/* Center */}
@@ -473,7 +473,7 @@ export default function TasbihPage({
             items-center
             justify-center
             select-none
-            mt-4
+            mt-6
             mb-6
             shrink-0
           "
