@@ -142,10 +142,10 @@ export default async function Home() {
                   )}
 
                   <p className="text-xs mt-3 text-gray-500">
-                    Created{" "}
+                    Created:{" "}
                     {new Date(item.created_at).toLocaleString("en-GB", {
                       day: "2-digit",
-                      month: "short",
+                      month: "long",
                       year: "numeric"
                     })}
                   </p>
@@ -245,7 +245,7 @@ export default async function Home() {
                   Created:{" "}
                   {new Date(item.created_at).toLocaleString("en-GB", {
                     day: "2-digit",
-                    month: "short",
+                    month: "long",
                     year: "numeric"
                   })}
                 </p>
@@ -255,7 +255,7 @@ export default async function Home() {
                   {item.completed_at
                     ? new Date(item.completed_at).toLocaleString("en-GB", {
                         day: "2-digit",
-                        month: "short",
+                        month: "long",
                         year: "numeric"
                       })
                     : "—"}
