@@ -191,11 +191,17 @@ export default function EditPage({
       <div className="flex justify-between items-center mb-8">
 
         <button
-          onClick={() => router.push("/")}
-          className="w-24 py-2 rounded-xl bg-[#111827] border border-[#1F2937]"
-        >
-          Back
-        </button>
+        onClick={() => {
+          router.back()
+
+          setTimeout(() => {
+            router.refresh()
+          }, 100)
+        }}
+        className="w-24 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+      >
+        Back
+      </button>
 
         <h1 className="text-xl font-bold text-center">
           Edit Event
