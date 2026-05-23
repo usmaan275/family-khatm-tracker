@@ -27,8 +27,9 @@ export default function EditPage({
   const [saving, setSaving] = useState(false)
   const [leaving, setLeaving] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
-  const createdDateRef = useRef<HTMLInputElement | null>(null)
-  const completedDateRef = useRef<HTMLInputElement | null>(null)
+
+  const [showCreatedPicker, setShowCreatedPicker] = useState(false)
+  const [showCompletedPicker, setShowCompletedPicker] = useState(false)
 
   useEffect(() => {
     fetchEvent()
@@ -66,7 +67,7 @@ export default function EditPage({
       .update({
         title: event.title,
         dhikr_text: event.dhikr_text,
-        target: event.target, // ✅ ADDED
+        target: event.target,
         created_at: event.created_at,
         completed_at:
           event.status === "completed"
@@ -96,80 +97,58 @@ export default function EditPage({
 
   async function updateTarget(value: number) {
     if (!event) return
-  
+
     const newTarget = Number(value)
-  
-    // 1. Update local state immediately (UI responsiveness)
-    const updatedEvent = {
+
+    setEvent({
       ...event,
       target: newTarget,
-    }
-  
-    setEvent(updatedEvent)
-  
-    // 2. Save to DB
-    const { error } = await supabase
+    })
+
+    await supabase
       .from("elements")
       .update({
         target: newTarget,
       })
       .eq("id", event.id)
-  
-    if (error) {
-      console.error("Failed to update target:", error)
-      return
-    }
-  
-    // 3. Recalculate dhikr total (self-contained, no external file needed)
+
     const { data: contributions } = await supabase
       .from("dhikr_contributions")
       .select("amount")
       .eq("element_id", event.id)
-  
+
     const total =
-      contributions?.reduce(
-        (sum, c) => sum + c.amount,
-        0
-      ) || 0
-  
-    // 4. Determine correct status
+      contributions?.reduce((sum, c) => sum + c.amount, 0) || 0
+
     let newStatus: "active" | "completed" = "active"
-  
+
     if (newTarget > 0 && total >= newTarget) {
       newStatus = "completed"
     }
-  
-    // 5. Update status if needed
-    if (updatedEvent.status !== newStatus) {
-      const { error: statusError } = await supabase
-        .from("elements")
-        .update({
-          status: newStatus,
-          completed_at:
-            newStatus === "completed"
-              ? new Date().toISOString()
-              : null,
-        })
-        .eq("id", event.id)
-  
-      if (statusError) {
-        console.error("Failed to update status:", statusError)
-        return
-      }
-  
-      setEvent((prev) =>
-        prev
-          ? {
-              ...prev,
-              status: newStatus,
-              completed_at:
-                newStatus === "completed"
-                  ? new Date().toISOString()
-                  : null,
-            }
-          : prev
-      )
-    }
+
+    await supabase
+      .from("elements")
+      .update({
+        status: newStatus,
+        completed_at:
+          newStatus === "completed"
+            ? new Date().toISOString()
+            : null,
+      })
+      .eq("id", event.id)
+
+    setEvent((prev) =>
+      prev
+        ? {
+            ...prev,
+            status: newStatus,
+            completed_at:
+              newStatus === "completed"
+                ? new Date().toISOString()
+                : null,
+          }
+        : prev
+    )
   }
 
   if (!event) {
@@ -183,6 +162,28 @@ export default function EditPage({
     )
   }
 
+  // helpers for splitting dates
+  const created = event.created_at ? new Date(event.created_at) : null
+  const completed = event.completed_at ? new Date(event.completed_at) : null
+
+  function updateCreated(d: number, m: number, y: number) {
+    if (!created) return
+    const updated = new Date(created)
+    updated.setDate(d)
+    updated.setMonth(m - 1)
+    updated.setFullYear(y)
+    updateField("created_at", updated.toISOString())
+  }
+
+  function updateCompleted(d: number, m: number, y: number) {
+    if (!completed) return
+    const updated = new Date(completed)
+    updated.setDate(d)
+    updated.setMonth(m - 1)
+    updated.setFullYear(y)
+    updateField("completed_at", updated.toISOString())
+  }
+
   return (
     <main className="min-h-screen bg-[#070B14] text-white p-6">
 
@@ -191,7 +192,7 @@ export default function EditPage({
 
         <button
           onClick={() => router.push("/")}
-          className="w-24 py-2 rounded-xl bg-[#111827] border border-[#1F2937] hover:bg-gray-700 hover:text-white transition"
+          className="w-24 py-2 rounded-xl bg-[#111827] border border-[#1F2937]"
         >
           Back
         </button>
@@ -209,19 +210,14 @@ export default function EditPage({
         </button>
       </div>
 
-      {/* Content Card */}
       <div className="max-w-2xl mx-auto space-y-6">
 
         {/* Title */}
         <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
-          <p className="text-sm text-gray-400 mb-2">
-            Title
-          </p>
+          <p className="text-sm text-gray-400 mb-2">Title</p>
           <input
             value={event.title}
-            onChange={(e) =>
-              updateField("title", e.target.value)
-            }
+            onChange={(e) => updateField("title", e.target.value)}
             className="w-full bg-[#1F2937] p-3 rounded-xl text-white"
           />
         </div>
@@ -229,184 +225,125 @@ export default function EditPage({
         {/* Dhikr Text */}
         {event.type === "dhikr" && (
           <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 space-y-4">
-
-            {/* Dhikr Text */}
-            <div>
-              <p className="text-sm text-gray-400 mb-2">
-                Dhikr Text
-              </p>
-
-              <input
-                value={event.dhikr_text || ""}
-                onChange={(e) =>
-                  updateField("dhikr_text", e.target.value)
-                }
-                className="w-full bg-[#1F2937] p-3 rounded-xl text-white"
-              />
-            </div>
+            <p className="text-sm text-gray-400 mb-2">Dhikr Text</p>
+            <input
+              value={event.dhikr_text || ""}
+              onChange={(e) => updateField("dhikr_text", e.target.value)}
+              className="w-full bg-[#1F2937] p-3 rounded-xl text-white"
+            />
           </div>
         )}
 
-        {/* Dhikr Amount */}
+        {/* Target */}
         {event.type === "dhikr" && (
-          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 space-y-4">
-            {/* TARGET AMOUNT */}
-            <div>
-              <p className="text-sm text-gray-400 mb-2">
-                Total Target Amount
-              </p>
+          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
+            <p className="text-sm text-gray-400 mb-2">Total Target Amount</p>
+            <input
+              type="number"
+              value={event.target ?? 0}
+              onChange={(e) => updateTarget(Number(e.target.value))}
+              className="w-full bg-[#1F2937] p-3 rounded-xl text-white text-green-400 font-bold"
+            />
+          </div>
+        )}
+
+        {/* CREATED DATE (3-part editor) */}
+        <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
+          <p className="text-sm text-gray-400 mb-3">Created At</p>
+
+          <div className="grid grid-cols-3 gap-2">
+            <input
+              type="number"
+              placeholder="DD"
+              value={created ? created.getDate() : ""}
+              onChange={(e) =>
+                updateCreated(
+                  Number(e.target.value),
+                  created ? created.getMonth() + 1 : 1,
+                  created ? created.getFullYear() : 2026
+                )
+              }
+              className="bg-[#1F2937] p-2 rounded text-white"
+            />
+
+            <input
+              type="number"
+              placeholder="MM"
+              value={created ? created.getMonth() + 1 : ""}
+              onChange={(e) =>
+                updateCreated(
+                  created ? created.getDate() : 1,
+                  Number(e.target.value),
+                  created ? created.getFullYear() : 2026
+                )
+              }
+              className="bg-[#1F2937] p-2 rounded text-white"
+            />
+
+            <input
+              type="number"
+              placeholder="YYYY"
+              value={created ? created.getFullYear() : ""}
+              onChange={(e) =>
+                updateCreated(
+                  created ? created.getDate() : 1,
+                  created ? created.getMonth() + 1 : 1,
+                  Number(e.target.value)
+                )
+              }
+              className="bg-[#1F2937] p-2 rounded text-white"
+            />
+          </div>
+        </div>
+
+        {/* COMPLETED DATE (3-part editor) */}
+        {event.status === "completed" && (
+          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
+            <p className="text-sm text-gray-400 mb-3">Completed At</p>
+
+            <div className="grid grid-cols-3 gap-2">
+              <input
+                type="number"
+                placeholder="DD"
+                value={completed ? completed.getDate() : ""}
+                onChange={(e) =>
+                  updateCompleted(
+                    Number(e.target.value),
+                    completed ? completed.getMonth() + 1 : 1,
+                    completed ? completed.getFullYear() : 2026
+                  )
+                }
+                className="bg-[#1F2937] p-2 rounded text-white"
+              />
 
               <input
                 type="number"
-                value={event.target ?? 0}
+                placeholder="MM"
+                value={completed ? completed.getMonth() + 1 : ""}
                 onChange={(e) =>
-                  updateTarget(
+                  updateCompleted(
+                    completed ? completed.getDate() : 1,
+                    Number(e.target.value),
+                    completed ? completed.getFullYear() : 2026
+                  )
+                }
+                className="bg-[#1F2937] p-2 rounded text-white"
+              />
+
+              <input
+                type="number"
+                placeholder="YYYY"
+                value={completed ? completed.getFullYear() : ""}
+                onChange={(e) =>
+                  updateCompleted(
+                    completed ? completed.getDate() : 1,
+                    completed ? completed.getMonth() + 1 : 1,
                     Number(e.target.value)
                   )
                 }
-                className="w-full bg-[#1F2937] p-3 rounded-xl text-white text-green-400 font-bold"
+                className="bg-[#1F2937] p-2 rounded text-white"
               />
             </div>
-
-          </div>
-        )}
-
-        {/* Created At */}
-        <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
-          <p className="text-sm text-gray-400 mb-2">
-            Created At
-          </p>
-
-          <div
-            onClick={() => {
-              const el = createdDateRef.current
-              if (!el) return
-            
-              // Chrome / Edge (best path)
-              if (typeof el.showPicker === "function") {
-                el.showPicker()
-                return
-              }
-            
-              // Safari fallback
-              el.focus()
-            
-              // last resort attempt
-              setTimeout(() => {
-                el.click()
-              }, 0)
-            }}
-            className="w-full bg-[#1F2937] p-3 rounded-xl text-white cursor-pointer"
-          >
-            {event.created_at
-              ? new Date(event.created_at).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })
-              : "Select date"}
-          </div>
-
-          <input
-            ref={createdDateRef}
-            type="date"
-            className="opacity-0 absolute pointer-events-none"
-            value={
-              event.created_at
-                ? new Date(event.created_at)
-                    .toISOString()
-                    .split("T")[0]
-                : ""
-            }
-            onChange={(e) => {
-              const selectedDate = new Date(e.target.value)
-
-              const existing = event.created_at
-                ? new Date(event.created_at)
-                : new Date()
-
-              selectedDate.setHours(
-                existing.getHours(),
-                existing.getMinutes(),
-                0,
-                0
-              )
-
-              updateField("created_at", selectedDate.toISOString())
-            }}
-          />
-        </div>
-
-        {/* Completed At */}
-        {event.status === "completed" && (
-          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
-            <p className="text-sm text-gray-400 mb-2">
-              Completed At
-            </p>
-
-            <div
-              onClick={() => {
-                const el = completedDateRef.current
-                if (!el) return
-              
-                // Chrome / Edge (best path)
-                if (typeof el.showPicker === "function") {
-                  el.showPicker()
-                  return
-                }
-              
-                // Safari fallback
-                el.focus()
-              
-                // last resort attempt
-                setTimeout(() => {
-                  el.click()
-                }, 0)
-              }}
-              className="w-full bg-[#1F2937] p-3 rounded-xl text-white cursor-pointer"
-            >
-              {event.completed_at
-                ? new Date(event.completed_at).toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })
-                : "Select date"}
-            </div>
-
-            <input
-              ref={completedDateRef}
-              type="date"
-              className="opacity-0 absolute pointer-events-none"
-              value={
-                event.completed_at
-                  ? new Date(event.completed_at)
-                      .toISOString()
-                      .split("T")[0]
-                  : ""
-              }
-              onChange={(e) => {
-                const selectedDate = new Date(e.target.value)
-
-                const existing = event.completed_at
-                  ? new Date(event.completed_at)
-                  : new Date()
-
-                selectedDate.setHours(
-                  existing.getHours(),
-                  existing.getMinutes(),
-                  0,
-                  0
-                )
-
-                updateField(
-                  "completed_at",
-                  e.target.value
-                    ? selectedDate.toISOString()
-                    : null
-                )
-              }}
-            />
           </div>
         )}
 
@@ -427,7 +364,6 @@ export default function EditPage({
               </p>
 
               <div className="flex gap-3">
-
                 <button
                   onClick={() => setShowDelete(false)}
                   className="flex-1 bg-[#1F2937] py-2 rounded-xl"
@@ -441,7 +377,6 @@ export default function EditPage({
                 >
                   Yes
                 </button>
-
               </div>
 
             </div>

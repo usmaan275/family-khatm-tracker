@@ -61,8 +61,6 @@ export default function CreatePage() {
         }
       }
 
-    // TODO next step: auto-create quran_juz rows if Quran
-    setLoading(false)
     router.push("/")
   }
 

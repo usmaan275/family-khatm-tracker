@@ -337,7 +337,7 @@ export default function TasbihPage({
       {/* Top Bar */}
       <div className="relative flex items-center justify-between mb-6 min-h-[44px]">
 
-        {/* Done */}
+        {/* 📊 */}
         <button
           onClick={() => {
             setLeaving(true)
@@ -351,7 +351,7 @@ export default function TasbihPage({
           disabled={leaving}
           className="w-18 h-10 text-sm rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
         >
-          {leaving ? "..." : "Done"}
+          {leaving ? "..." : "📊"}
         </button>
 
         {/* Center */}
