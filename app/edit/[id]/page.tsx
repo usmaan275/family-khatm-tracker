@@ -204,7 +204,7 @@ export default function EditPage({
       </button>
 
         <h1 className="text-xl font-bold text-center">
-          Edit Event
+          Edit Khatm
         </h1>
 
         <button
