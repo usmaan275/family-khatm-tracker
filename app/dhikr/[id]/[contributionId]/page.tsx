@@ -453,14 +453,14 @@ export default function TasbihPage({
                 setContribution({
                   ...contribution,
                   amount: Number(
-                    e.target.value
+                    e.target.value.replace(/\D/g, "")
                   ),
                 })
               }
               onBlur={(e) =>
                 updateAmount(
                   Number(
-                    e.target.value
+                    e.target.value.replace(/\D/g, "")
                   )
                 )
               }

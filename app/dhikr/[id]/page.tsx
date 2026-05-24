@@ -340,7 +340,7 @@ export default function DhikrPage({
                       onBlur={async (e) => {
                         setEditingId(null)
 
-                        const newAmount = Number(e.target.value)
+                        const newAmount = Number(e.target.value.replace(/\D/g, ""))
 
                         await supabase
                           .from("dhikr_contributions")
@@ -364,7 +364,7 @@ export default function DhikrPage({
                         const updated =
                           contributions.map((c) =>
                             c.id === entry.id
-                              ? { ...c, amount: Number(e.target.value) }
+                              ? { ...c, amount: Number(e.target.value.replace(/\D/g, "")) }
                               : c
                           )
                         setContributions(updated)

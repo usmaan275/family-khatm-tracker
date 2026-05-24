@@ -247,7 +247,7 @@ export default function EditPage({
             <input
               type="number"
               value={event.target ?? 0}
-              onChange={(e) => updateTarget(Number(e.target.value))}
+              onChange={(e) => updateTarget(Number(e.target.value.replace(/\D/g, "")))}
               className="w-full bg-[#1F2937] p-3 rounded-xl text-white text-green-400"
             />
           </div>

@@ -123,7 +123,7 @@ export default function CreatePage() {
             className="w-full p-3 mb-4 rounded-xl bg-[#111827] border border-[#1F2937] text-white placeholder-gray-400"
             placeholder="Target amount (e.g. 70000)"
             value={target}
-            onChange={(e) => setTarget(e.target.value)}
+            onChange={(e) => setTarget(e.target.value.replace(/\D/g, ""))}
           />
         </>
       )}
