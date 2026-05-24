@@ -112,7 +112,7 @@ export default function EditPage({
   async function updateTarget(value: number) {
     if (!event) return
 
-    const newTarget = Number(value)
+    const newTarget = isNaN(Number(value)) ? event.target ?? 0 : Number(value)
 
     setEvent({
       ...event,
