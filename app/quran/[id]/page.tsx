@@ -197,7 +197,7 @@ export default function QuranPage({
         return (
           <p className="text-gray-400 text-sm mt-1">
             There {remaining === 1 ? "is" : "are"}{" "}
-            {remaining} unallocated{" "} juz remaining
+            {remaining} unallocated juz remaining
           </p>
         )
       })()}
