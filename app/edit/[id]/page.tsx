@@ -245,8 +245,9 @@ export default function EditPage({
           <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
             <p className="text-sm text-gray-400 mb-2">Total Target Amount</p>
             <input
-              type="number"
-              value={event.target ?? 0}
+              type="text"
+              inputMode="numeric"
+              value={event.target ? Number(event.target).toLocaleString() : ""}
               onChange={(e) => updateTarget(Number(e.target.value.replace(/\D/g, "")))}
               className="w-full bg-[#1F2937] p-3 rounded-xl text-white text-green-400"
             />

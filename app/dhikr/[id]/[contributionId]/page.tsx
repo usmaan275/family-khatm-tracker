@@ -447,7 +447,8 @@ export default function TasbihPage({
             </p>
 
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={contribution.amount}
               onChange={(e) =>
                 setContribution({

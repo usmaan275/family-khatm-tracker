@@ -334,7 +334,8 @@ export default function DhikrPage({
 
                     {/* Amount */}
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       value={entry.amount}
                       onFocus={() => setEditingId(entry.id)}
                       onBlur={async (e) => {
@@ -412,7 +413,8 @@ export default function DhikrPage({
 
         {/* Amount */}
         <input
-          type="number"
+          type="text"
+          inputMode="numeric"
           placeholder="Amount"
           value={newAmount}
           onChange={(e) =>
