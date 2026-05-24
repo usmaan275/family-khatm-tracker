@@ -81,7 +81,7 @@ export default function EditPage({
       .update({
         title: event.title,
         dhikr_text: event.dhikr_text,
-        target: event.target,
+        target: event.target === 0 ? undefined : event.target,
         created_at: event.created_at,
         completed_at:
           newStatus === "completed"
@@ -109,10 +109,10 @@ export default function EditPage({
     setTimeout(() => router.refresh(), 100)
   }
 
-  async function updateTarget(value: string) {
+  async function updateTarget(value: number) {
     if (!event) return
 
-    const newTarget = value.trim() === "" ? event.target ?? 0 : Number(value)
+    const newTarget = Number(value)
 
     setEvent({
       ...event,
@@ -217,7 +217,7 @@ export default function EditPage({
               type="text"
               inputMode="numeric"
               value={event.target ? Number(event.target).toLocaleString() : ""}
-              onChange={(e) => updateTarget(e.target.value.replace(/\D/g, ""))}
+              onChange={(e) => updateTarget(Number(e.target.value.replace(/\D/g, "")))}
               className="w-full bg-[#1F2937] p-3 rounded-xl text-white text-green-400"
             />
           </div>
