@@ -27,10 +27,6 @@ export default function QuranPage({
 
   const [khatmTitle, setKhatmTitle] = useState("")
 
-  // LOCAL STATE (IMPORTANT FIX)
-  const [localNames, setLocalNames] = useState<Record<string, string>>({})
-  const [localCompleted, setLocalCompleted] = useState<Record<string, boolean>>({})
-
   useEffect(() => {
     fetchJuz()
   }, [])
@@ -60,70 +56,14 @@ export default function QuranPage({
     setLoading(false)
   }
 
-  // INIT LOCAL STATE ON FIRST LOAD
-  useEffect(() => {
-    const names: Record<string, string> = {}
-    const completed: Record<string, boolean> = {}
-
-    juzList.forEach((j) => {
-      names[j.id] = j.assigned_name || ""
-      completed[j.id] = j.completed
-    })
-
-    setLocalNames(names)
-    setLocalCompleted(completed)
-  }, [juzList])
-
-  async function checkQuranCompletion(updated: JuzRow[]) {
-
-    const allDone = updated.every((j) => j.completed)
-
-    if (allDone && updated.length === 30) {
-
-      await supabase
-        .from("elements")
-        .update({
-            status: "completed",
-            completed_at: new Date().toISOString()
-          })
-        .eq("id", id)
-    }
-  }
-
-  async function handleDone() {
-
-    setSaving(true)
-  
-    const updates = juzList.map((juz) => {
-      return supabase
-        .from("quran_juz")
-        .update({
-          assigned_name:
-            localNames[juz.id] ??
-            juz.assigned_name,
-  
-          completed:
-            localCompleted[juz.id] ??
-            juz.completed,
-        })
-        .eq("id", juz.id)
-    })
-  
-    await Promise.all(updates)
-  
-    // REFETCH latest state AFTER save
-    const { data } = await supabase
-      .from("quran_juz")
-      .select("completed")
-      .eq("element_id", id)
-  
-    const allDone = data?.every(
-      (j) => j.completed === true
+  async function checkQuranCompletion(
+    updated: JuzRow[]
+  ) {
+    const allDone = updated.every(
+      (j) => j.completed
     )
   
-    if (allDone && data?.length === 30) {
-  
-      /* Mark completed */
+    if (allDone && updated.length === 30) {
       await supabase
         .from("elements")
         .update({
@@ -132,10 +72,7 @@ export default function QuranPage({
             new Date().toISOString(),
         })
         .eq("id", id)
-  
     } else {
-  
-      /* Revert back to active */
       await supabase
         .from("elements")
         .update({
@@ -144,6 +81,52 @@ export default function QuranPage({
         })
         .eq("id", id)
     }
+  }
+
+  async function updateName(
+    juzId: string,
+    value: string
+  ) {
+    setJuzList((prev) =>
+      prev.map((j) =>
+        j.id === juzId
+          ? { ...j, assigned_name: value }
+          : j
+      )
+    )
+  
+    await supabase
+      .from("quran_juz")
+      .update({
+        assigned_name: value,
+      })
+      .eq("id", juzId)
+  }
+  
+  async function updateCompleted(
+    juzId: string,
+    value: boolean
+  ) {
+    const updated = juzList.map((j) =>
+      j.id === juzId
+        ? { ...j, completed: value }
+        : j
+    )
+  
+    setJuzList(updated)
+  
+    await supabase
+      .from("quran_juz")
+      .update({
+        completed: value,
+      })
+      .eq("id", juzId)
+  
+    await checkQuranCompletion(updated)
+  }
+
+  async function handleDone() {
+    setSaving(true)
   
     router.push("/")
   
@@ -171,13 +154,8 @@ export default function QuranPage({
 
       {/* Back */}
       <button
-        onClick={() => {
-          router.back()
-
-          setTimeout(() => {
-            router.refresh()
-          }, 100)
-        }}
+        onClick={handleDone}
+        disabled={saving}
         className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
       >
         Back
@@ -201,8 +179,29 @@ export default function QuranPage({
 
       {/* Progress */}
       <p className="text-green-400 mt-1">
-        {juzList.filter((j) => localCompleted[j.id]).length} / 30 completed
+        {juzList.filter((j) => j.completed).length} / 30 completed
       </p>
+
+      {/* Allocation Status */}
+      {(() => {
+        const allocated = juzList.filter(
+          (j) => j.assigned_name?.trim()
+        ).length
+
+        const remaining = 30 - allocated
+
+        if (allocated === 0 || allocated === 30) {
+          return null
+        }
+
+        return (
+          <p className="text-gray-400 text-sm mt-1">
+            There {remaining === 1 ? "is" : "are"}{" "}
+            {remaining} unallocated{" "}
+            {remaining === 1 ? "juz" : "juz remaining"}
+          </p>
+        )
+      })()}
 
       {/* List */}
       <div className="space-y-3 mt-4">
@@ -212,7 +211,7 @@ export default function QuranPage({
           <div
             key={juz.id}
             className={`rounded-2xl p-4 flex items-center gap-3 border transition ${
-              localCompleted[juz.id]
+              juz.completed
                 ? "bg-green-900/20 border-green-700"
                 : "bg-[#111827] border-[#1F2937]"
             }`}
@@ -223,29 +222,29 @@ export default function QuranPage({
               Juz {juz.juz_number}
             </div>
 
-            {/* Name input (LOCAL ONLY) */}
+            {/* Name input */}
             <input
               type="text"
-              value={localNames[juz.id] ?? ""}
+              value={juz.assigned_name ?? ""}
               onChange={(e) =>
-                setLocalNames((prev) => ({
-                  ...prev,
-                  [juz.id]: e.target.value,
-                }))
+                updateName(
+                  juz.id,
+                  e.target.value
+                )
               }
               className="flex-1 p-2 rounded bg-[#1F2937] text-white"
               placeholder="Name"
             />
 
-            {/* Checkbox (LOCAL ONLY) */}
+            {/* Checkbox */}
             <input
               type="checkbox"
-              checked={localCompleted[juz.id] ?? false}
+              checked={juz.completed}
               onChange={(e) =>
-                setLocalCompleted((prev) => ({
-                  ...prev,
-                  [juz.id]: e.target.checked,
-                }))
+                updateCompleted(
+                  juz.id,
+                  e.target.checked
+                )
               }
               className="w-5 h-5 accent-green-600"
             />
