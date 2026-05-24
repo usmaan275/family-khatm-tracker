@@ -369,7 +369,7 @@ export default function TasbihPage({
         {/* Delete */}
         <button
           onClick={() => setShowDeleteModal(true)}
-          className="w-18 h-10 text-sm rounded-lg bg-[#5B1C1C] hover:bg-[#6B2222] transition text-white font-medium"
+          className="w-18 h-10 text-sm rounded-lg bg-[#5B1C1C] hover:bg-red-700 transition text-white font-medium"
         >
           Delete
         </button>
