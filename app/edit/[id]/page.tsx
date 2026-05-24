@@ -356,7 +356,7 @@ export default function EditPage({
         {/* Delete */}
         <button
           onClick={() => setShowDelete(true)}
-          className="w-full bg-[#5B1C1C] hover:bg-red-700 transition py-3 rounded-xl"
+          className="w-full bg-[#5B1C1C] hover:bg-red-700 transition py-3 rounded-2xl"
         >
           Delete Khatm
         </button>
@@ -372,14 +372,14 @@ export default function EditPage({
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowDelete(false)}
-                  className="flex-1 bg-[#1F2937] py-2 rounded-xl"
+                  className="flex-1 py-3 rounded-2xl bg-[#1F2937] hover:bg-[#374151] transition font-semibold"
                 >
                   No
                 </button>
 
                 <button
                   onClick={deleteEvent}
-                  className="flex-1 bg-red-700 py-2 rounded-xl"
+                  className="flex-1 py-3 rounded-2xl bg-red-700 hover:bg-red-600 transition font-semibold"
                 >
                   Yes
                 </button>
