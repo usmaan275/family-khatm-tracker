@@ -3,7 +3,6 @@
 import {
   use,
   useEffect,
-  useMemo,
   useState,
 } from "react"
 
@@ -140,9 +139,9 @@ export default function TasbihPage({
       prev.map((c) =>
         c.id === contribution.id
           ? {
-              ...c,
-              amount: newAmount,
-            }
+            ...c,
+            amount: newAmount,
+          }
           : c
       )
     )
@@ -195,9 +194,9 @@ export default function TasbihPage({
       prev.map((c) =>
         c.id === contribution.id
           ? {
-              ...c,
-              amount: value,
-            }
+            ...c,
+            amount: value,
+          }
           : c
       )
     )
@@ -300,18 +299,18 @@ export default function TasbihPage({
       0
     )
 
-    useEffect(() => {
-      const originalBody = document.body.style.cssText
-      const originalHtml = document.documentElement.style.cssText
-    
-      document.body.style.cssText = "overflow:hidden; position:fixed; width:100%;"
-      document.documentElement.style.cssText = "overflow:hidden; height:100%;"
-    
-      return () => {
-        document.body.style.cssText = originalBody
-        document.documentElement.style.cssText = originalHtml
-      }
-    }, [])
+  useEffect(() => {
+    const originalBody = document.body.style.cssText
+    const originalHtml = document.documentElement.style.cssText
+
+    document.body.style.cssText = "overflow:hidden; position:fixed; width:100%;"
+    document.documentElement.style.cssText = "overflow:hidden; height:100%;"
+
+    return () => {
+      document.body.style.cssText = originalBody
+      document.documentElement.style.cssText = originalHtml
+    }
+  }, [])
 
   if (!event || !contribution) {
 

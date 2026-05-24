@@ -62,7 +62,7 @@ export default function QuranPage({
     const allDone = updated.every(
       (j) => j.completed
     )
-  
+
     if (allDone && updated.length === 30) {
       await supabase
         .from("elements")
@@ -94,7 +94,7 @@ export default function QuranPage({
           : j
       )
     )
-  
+
     await supabase
       .from("quran_juz")
       .update({
@@ -102,7 +102,7 @@ export default function QuranPage({
       })
       .eq("id", juzId)
   }
-  
+
   async function updateCompleted(
     juzId: string,
     value: boolean
@@ -112,24 +112,24 @@ export default function QuranPage({
         ? { ...j, completed: value }
         : j
     )
-  
+
     setJuzList(updated)
-  
+
     await supabase
       .from("quran_juz")
       .update({
         completed: value,
       })
       .eq("id", juzId)
-  
+
     await checkQuranCompletion(updated)
   }
 
   async function handleDone() {
     setSaving(true)
-  
+
     router.push("/")
-  
+
     setTimeout(() => {
       router.refresh()
     }, 100)
@@ -149,28 +149,28 @@ export default function QuranPage({
   return (
     <main className="min-h-screen bg-[#070B14] text-white p-6">
 
-    {/* Top Bar */}
-    <div className="flex items-center justify-between">
+      {/* Top Bar */}
+      <div className="flex items-center justify-between">
 
-      {/* Back */}
-      <button
-        onClick={handleDone}
-        disabled={saving}
-        className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
-      >
-        Back
-      </button>
+        {/* Back */}
+        <button
+          onClick={handleDone}
+          disabled={saving}
+          className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+        >
+          Back
+        </button>
 
-      {/* Done */}
-      <button
-        onClick={handleDone}
-        disabled={saving}
-        className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
-      >
-        {saving ? "Saving..." : "Done"}
-      </button>
+        {/* Done */}
+        <button
+          onClick={handleDone}
+          disabled={saving}
+          className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+        >
+          {saving ? "Saving..." : "Done"}
+        </button>
 
-    </div>
+      </div>
 
       {/* Title */}
       <h1 className="text-2xl font-bold mt-3">
@@ -184,20 +184,46 @@ export default function QuranPage({
 
       {/* Allocation Status */}
       {(() => {
-        const allocated = juzList.filter(
-          (j) => j.assigned_name?.trim()
-        ).length
+        const unallocated = juzList.filter(
+          (j) => !j.assigned_name?.trim()
+        )
 
-        const remaining = 30 - allocated
-
-        if (allocated === 0 || allocated === 30) {
+        if (
+          unallocated.length === 0 ||
+          unallocated.length === 30
+        ) {
           return null
+        }
+
+        function ordinal(n: number) {
+          const s = ["th", "st", "nd", "rd"]
+          const v = n % 100
+
+          return (
+            n +
+            (s[(v - 20) % 10] ||
+              s[v] ||
+              s[0])
+          )
         }
 
         return (
           <p className="text-gray-400 text-sm mt-1">
-            There {remaining === 1 ? "is" : "are"}{" "}
-            {remaining} unallocated juz remaining
+            There{" "}
+            {unallocated.length === 1
+              ? "is"
+              : "are"}{" "}
+            {unallocated.length} unallocated{" "}
+            {unallocated.length === 1
+              ? "juz"
+              : "juz remaining"}{" "}
+            (
+            {unallocated
+              .map((j) =>
+                ordinal(j.juz_number)
+              )
+              .join(", ")}
+            )
           </p>
         )
       })()}
@@ -209,11 +235,10 @@ export default function QuranPage({
 
           <div
             key={juz.id}
-            className={`rounded-2xl p-4 flex items-center gap-3 border transition ${
-              juz.completed
-                ? "bg-green-900/20 border-green-700"
-                : "bg-[#111827] border-[#1F2937]"
-            }`}
+            className={`rounded-2xl p-4 flex items-center gap-3 border transition ${juz.completed
+              ? "bg-green-900/20 border-green-700"
+              : "bg-[#111827] border-[#1F2937]"
+              }`}
           >
 
             {/* Juz */}

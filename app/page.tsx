@@ -177,95 +177,95 @@ export default async function Home() {
 
           <div className="space-y-4">
 
-          {completed.map((item) => (
+            {completed.map((item) => (
 
-            <div
-              key={item.id}
-              className="p-4 bg-[#111827] border border-[#1F2937] rounded-2xl opacity-70 hover:border-green-600 transition my-4"
-            >
+              <div
+                key={item.id}
+                className="p-4 bg-[#111827] border border-[#1F2937] rounded-2xl opacity-70 hover:border-green-600 transition my-4"
+              >
 
-              {/* TOP ROW: Title + Edit */}
-              <div className="flex justify-between items-start">
+                {/* TOP ROW: Title + Edit */}
+                <div className="flex justify-between items-start">
 
-                {/* MAIN CARD LINK */}
+                  {/* MAIN CARD LINK */}
+                  <Link
+                    href={
+                      item.type === "quran"
+                        ? `/quran/${item.id}`
+                        : `/dhikr/${item.id}`
+                    }
+                    className="flex-1"
+                  >
+                    <h3 className="font-semibold text-lg">
+                      {item.title}
+                    </h3>
+                  </Link>
+
+                  {/* EDIT BUTTON (SEPARATE LINK) */}
+                  <Link
+                    href={`/edit/${item.id}`}
+                    className="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-500 transition text-xs font-semibold ml-3"
+                  >
+                    Edit
+                  </Link>
+
+                </div>
+
+                {/* DESCRIPTION + PROGRESS (still clickable area) */}
                 <Link
                   href={
                     item.type === "quran"
                       ? `/quran/${item.id}`
                       : `/dhikr/${item.id}`
                   }
-                  className="flex-1"
                 >
-                  <h3 className="font-semibold text-lg">
-                    {item.title}
-                  </h3>
-                </Link>
 
-                {/* EDIT BUTTON (SEPARATE LINK) */}
-                <Link
-                  href={`/edit/${item.id}`}
-                  className="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-500 transition text-xs font-semibold ml-3"
-                >
-                  Edit
-                </Link>
-
-              </div>
-
-              {/* DESCRIPTION + PROGRESS (still clickable area) */}
-              <Link
-                href={
-                  item.type === "quran"
-                    ? `/quran/${item.id}`
-                    : `/dhikr/${item.id}`
-                }
-              >
-
-                <p className="text-sm text-gray-400 mt-1">
-                  {item.type === "quran"
-                    ? "Quran Khatm"
-                    : item.dhikr_text}
-                </p>
-
-                {/* Quran Progress */}
-                {item.type === "quran" && (
-                  <p className="text-sm mt-2 text-green-400">
-                    {getQuranProgress(item.id)} / 30 completed
+                  <p className="text-sm text-gray-400 mt-1">
+                    {item.type === "quran"
+                      ? "Quran Khatm"
+                      : item.dhikr_text}
                   </p>
-                )}
 
-                {/* Dhikr Progress */}
-                {item.type === "dhikr" && (
-                  <p className="text-sm mt-2 text-green-400">
-                    {getDhikrTotal(item.id).toLocaleString()} /{" "}
-                    {item.target?.toLocaleString()}
+                  {/* Quran Progress */}
+                  {item.type === "quran" && (
+                    <p className="text-sm mt-2 text-green-400">
+                      {getQuranProgress(item.id)} / 30 completed
+                    </p>
+                  )}
+
+                  {/* Dhikr Progress */}
+                  {item.type === "dhikr" && (
+                    <p className="text-sm mt-2 text-green-400">
+                      {getDhikrTotal(item.id).toLocaleString()} /{" "}
+                      {item.target?.toLocaleString()}
+                    </p>
+                  )}
+
+                  <p className="text-xs mt-3 text-gray-500">
+                    Created:{" "}
+                    {new Date(item.created_at).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric"
+                    })}
                   </p>
-                )}
 
-                <p className="text-xs mt-3 text-gray-500">
-                  Created:{" "}
-                  {new Date(item.created_at).toLocaleString("en-GB", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric"
-                  })}
-                </p>
-
-                <p className="text-xs mt-3 text-gray-500">
-                  Completed:{" "}
-                  {item.completed_at
-                    ? new Date(item.completed_at).toLocaleString("en-GB", {
+                  <p className="text-xs mt-3 text-gray-500">
+                    Completed:{" "}
+                    {item.completed_at
+                      ? new Date(item.completed_at).toLocaleString("en-GB", {
                         day: "2-digit",
                         month: "long",
                         year: "numeric"
                       })
-                    : "—"}
-                </p>
+                      : "—"}
+                  </p>
 
-              </Link>
+                </Link>
 
-            </div>
+              </div>
 
-          ))}
+            ))}
           </div>
         )}
 

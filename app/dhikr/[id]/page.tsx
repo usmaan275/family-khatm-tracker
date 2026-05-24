@@ -101,9 +101,9 @@ export default function DhikrPage({
         prev.map((c) =>
           c.id === existing.id
             ? {
-                ...c,
-                amount: updatedAmount,
-              }
+              ...c,
+              amount: updatedAmount,
+            }
             : c
         )
       )
@@ -144,24 +144,24 @@ export default function DhikrPage({
   async function checkDhikrCompletion(
     totalAmount: number
   ) {
-  
+
     if (!event) return
-  
+
     const { data: element } = await supabase
       .from("elements")
       .select("status")
       .eq("id", id)
       .single()
-  
+
     const isCompleted =
       element?.status === "completed"
-  
+
     /* SHOULD COMPLETE */
     if (
       totalAmount >= event.target &&
       !isCompleted
     ) {
-  
+
       await supabase
         .from("elements")
         .update({
@@ -170,16 +170,16 @@ export default function DhikrPage({
             new Date().toISOString(),
         })
         .eq("id", id)
-  
+
       return
     }
-  
+
     /* SHOULD REVERT BACK TO ACTIVE */
     if (
       totalAmount < event.target &&
       isCompleted
     ) {
-  
+
       await supabase
         .from("elements")
         .update({

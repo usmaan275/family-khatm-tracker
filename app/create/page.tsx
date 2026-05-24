@@ -16,9 +16,9 @@ export default function CreatePage() {
   async function handleCreate() {
     setLoading(true)
     if (!title) {
-        setLoading(false)
-        return
-    } 
+      setLoading(false)
+      return
+    }
 
     const { data, error } = await supabase
       .from("elements")
@@ -42,24 +42,24 @@ export default function CreatePage() {
     }
     if (type === "quran") {
 
-        const juzRows = Array.from({ length: 30 }, (_, i) => ({
-          element_id: data.id,
-          juz_number: i + 1,
-          assigned_name: "",
-          completed: false
-        }))
-      
-        const { error: juzError } = await supabase
-          .from("quran_juz")
-          .insert(juzRows)
-      
-        if (juzError) {
-          console.error(juzError)
-          alert("Error creating juz rows")
-          setLoading(false)
-          return
-        }
+      const juzRows = Array.from({ length: 30 }, (_, i) => ({
+        element_id: data.id,
+        juz_number: i + 1,
+        assigned_name: "",
+        completed: false
+      }))
+
+      const { error: juzError } = await supabase
+        .from("quran_juz")
+        .insert(juzRows)
+
+      if (juzError) {
+        console.error(juzError)
+        alert("Error creating juz rows")
+        setLoading(false)
+        return
       }
+    }
 
     router.push("/")
   }
@@ -85,18 +85,16 @@ export default function CreatePage() {
       <div className="flex gap-4 mb-6">
         <button
           onClick={() => setType("quran")}
-          className={`px-4 py-2 rounded ${
-            type === "quran" ? "bg-green-600 text-white" : "bg-[#1F2937] text-gray-300"
-          }`}
+          className={`px-4 py-2 rounded ${type === "quran" ? "bg-green-600 text-white" : "bg-[#1F2937] text-gray-300"
+            }`}
         >
           Quran Khatm
         </button>
 
         <button
           onClick={() => setType("dhikr")}
-          className={`px-4 py-2 rounded ${
-            type === "dhikr" ? "bg-green-600 text-white" : "bg-[#1F2937] text-gray-300"
-          }`}
+          className={`px-4 py-2 rounded ${type === "dhikr" ? "bg-green-600 text-white" : "bg-[#1F2937] text-gray-300"
+            }`}
         >
           Dhikr Khatm
         </button>
