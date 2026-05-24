@@ -62,6 +62,20 @@ export default function EditPage({
 
     setSaving(true)
 
+    const { data: contributions } = await supabase
+      .from("dhikr_contributions")
+      .select("amount")
+      .eq("element_id", event.id)
+
+    const total =
+      contributions?.reduce((sum, c) => sum + c.amount, 0) || 0
+
+    let newStatus: "active" | "completed" = "active"
+
+    if (event.target && total >= event.target) {
+      newStatus = "completed"
+    }
+
     await supabase
       .from("elements")
       .update({
@@ -70,10 +84,10 @@ export default function EditPage({
         target: event.target,
         created_at: event.created_at,
         completed_at:
-          event.status === "completed"
-            ? event.completed_at
+          newStatus === "completed"
+            ? event.completed_at || new Date().toISOString()
             : null,
-        status: event.status,
+        status: newStatus,
       })
       .eq("id", event.id)
 
@@ -104,51 +118,6 @@ export default function EditPage({
       ...event,
       target: newTarget,
     })
-
-    await supabase
-      .from("elements")
-      .update({
-        target: newTarget,
-      })
-      .eq("id", event.id)
-
-    const { data: contributions } = await supabase
-      .from("dhikr_contributions")
-      .select("amount")
-      .eq("element_id", event.id)
-
-    const total =
-      contributions?.reduce((sum, c) => sum + c.amount, 0) || 0
-
-    let newStatus: "active" | "completed" = "active"
-
-    if (newTarget > 0 && total >= newTarget) {
-      newStatus = "completed"
-    }
-
-    await supabase
-      .from("elements")
-      .update({
-        status: newStatus,
-        completed_at:
-          newStatus === "completed"
-            ? new Date().toISOString()
-            : null,
-      })
-      .eq("id", event.id)
-
-    setEvent((prev) =>
-      prev
-        ? {
-          ...prev,
-          status: newStatus,
-          completed_at:
-            newStatus === "completed"
-              ? new Date().toISOString()
-              : null,
-        }
-        : prev
-    )
   }
 
   if (!event) {
