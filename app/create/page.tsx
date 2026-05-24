@@ -15,7 +15,7 @@ export default function CreatePage() {
 
   async function handleCreate() {
     setLoading(true)
-    if (!title) {
+    if (!title || (type === "dhikr" && (!dhikrText || !target))) {
       setLoading(false)
       return
     }
