@@ -167,7 +167,7 @@ export default function EditPage({
               router.refresh()
             }, 100)
           }}
-          className="w-24 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+          className="w-22 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
         >
           Back
         </button>
@@ -179,7 +179,7 @@ export default function EditPage({
         <button
           onClick={save}
           disabled={saving}
-          className="w-24 py-2 rounded-xl bg-green-600 hover:bg-green-500 transition"
+          className="w-22 py-2 rounded-xl bg-green-600 hover:bg-green-500 disabled:opacity-70 transition"
         >
           {saving ? "Saving..." : "Done"}
         </button>
