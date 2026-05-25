@@ -433,7 +433,8 @@ export default function TasbihPage({
                 bg-[#111827]
                 border border-[#1F2937]
                 rounded-2xl
-                px-4 py-4
+                px-4
+                h-15
                 text-left
                 text-lg
                 outline-none
@@ -474,7 +475,8 @@ export default function TasbihPage({
                 bg-[#111827]
                 border border-[#1F2937]
                 rounded-2xl
-                px-4 py-4
+                px-4
+                h-15
                 text-left
                 text-2xl
                 font-bold
