@@ -382,8 +382,7 @@ export default function TasbihPage({
         <div className="flex items-end">
           <div
             style={{
-              maxHeight: `${window.innerHeight * 0.18}px`,
-              fontSize: `clamp(0.9rem, 2.8vw, 1.25rem)`,
+              maxHeight: `${window.innerHeight * 0.18}px`
             }}
             className={`
               w-full
@@ -394,6 +393,7 @@ export default function TasbihPage({
               rounded-2xl
               px-3 py-2
               text-center
+              text-xl
               text-white
               leading-loose
               overflow-y-auto
