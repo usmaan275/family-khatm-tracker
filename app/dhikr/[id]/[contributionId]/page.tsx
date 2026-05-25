@@ -381,6 +381,10 @@ export default function TasbihPage({
         {/* Dhikr Text */}
         <div className="flex items-end">
           <div
+            style={{
+              maxHeight: `${window.innerHeight * 0.18}px`,
+              fontSize: `clamp(0.9rem, 2.8vw, 1.25rem)`,
+            }}
             className={`
               w-full
               max-w-2xl
@@ -390,9 +394,9 @@ export default function TasbihPage({
               rounded-2xl
               px-3 py-2
               text-center
-              text-xl
               text-white
               leading-loose
+              overflow-y-auto
               ${arabicFont.className}
             `}
           >

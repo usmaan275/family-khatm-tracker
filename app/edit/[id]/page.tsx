@@ -79,8 +79,8 @@ export default function EditPage({
     await supabase
       .from("elements")
       .update({
-        title: event.title,
-        dhikr_text: event.dhikr_text,
+        title: event.title.trim() === "" ? undefined : event.title,
+        dhikr_text: event.dhikr_text?.trim() === "" ? undefined : event.dhikr_text,
         target: event.target === 0 ? undefined : event.target,
         created_at: event.created_at,
         completed_at:
