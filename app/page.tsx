@@ -23,7 +23,16 @@ export default async function Home() {
   }
 
   const active = events?.filter((e) => e.status === "active") || []
-  const completed = events?.filter((e) => e.status === "completed") || []
+  const completed =
+    events
+      ?.filter((e) => e.status === "completed")
+      .sort(
+        (a, b) =>
+          new Date(b.completed_at || "").getTime() -
+          new Date(a.completed_at || "").getTime()
+      ) || []
+
+  const recentCompleted = completed.slice(0, 3)
 
   /* ----------------------------- */
   /* Helpers */
@@ -65,7 +74,7 @@ export default async function Home() {
       <section className="mb-10">
 
         <h2 className="text-lg font-semibold mb-3">
-          Active
+          Active ({active.length})
         </h2>
 
         {active.length === 0 ? (
@@ -164,7 +173,7 @@ export default async function Home() {
       <section>
 
         <h2 className="text-lg font-semibold mb-3">
-          Completed
+          Completed ({completed.length})
         </h2>
 
         {completed.length === 0 ? (
@@ -177,7 +186,7 @@ export default async function Home() {
 
           <div className="space-y-4">
 
-            {completed.map((item) => (
+            {recentCompleted.map((item) => (
 
               <div
                 key={item.id}
@@ -266,6 +275,27 @@ export default async function Home() {
               </div>
 
             ))}
+
+            <div className="flex justify-center">
+              {completed.length > 3 && (
+                <Link
+                  href="/completed"
+                    className="
+                    inline-flex
+                    px-8 py-2
+                    rounded-lg
+                    bg-green-600
+                    hover:bg-green-500
+                    transition
+                    text-white
+                    font-medium
+                    mt-4
+                  "
+                >
+                  View All
+                </Link>
+              )}
+            </div>
           </div>
         )}
 
