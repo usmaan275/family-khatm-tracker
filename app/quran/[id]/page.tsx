@@ -128,7 +128,7 @@ export default function QuranPage({
   async function handleDone() {
     setSaving(true)
 
-    router.push("/")
+    router.back()
 
     setTimeout(() => {
       router.refresh()

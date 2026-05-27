@@ -229,7 +229,7 @@ export default function DhikrPage({
         <button
           onClick={() => {
             setLeaving(true)
-            router.push("/")
+            router.back()
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
@@ -242,7 +242,7 @@ export default function DhikrPage({
         <button
           onClick={() => {
             setLeaving(true)
-            router.push("/")
+            router.back()
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
@@ -463,7 +463,7 @@ export default function DhikrPage({
         <button
           onClick={() => {
             setLeaving(true)
-            router.push("/")
+            router.back()
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}

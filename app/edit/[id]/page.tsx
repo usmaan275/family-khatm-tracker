@@ -30,6 +30,14 @@ export default function EditPage({
 
   const [showCreatedPicker, setShowCreatedPicker] = useState(false)
   const [showCompletedPicker, setShowCompletedPicker] = useState(false)
+  
+  const [createdDay, setCreatedDay] = useState("")
+  const [createdMonth, setCreatedMonth] = useState("")
+  const [createdYear, setCreatedYear] = useState("")
+  
+  const [completedDay, setCompletedDay] = useState("")
+  const [completedMonth, setCompletedMonth] = useState("")
+  const [completedYear, setCompletedYear] = useState("")
 
   useEffect(() => {
     fetchEvent()
@@ -43,6 +51,22 @@ export default function EditPage({
       .single()
 
     setEvent(data)
+
+    if (data.created_at) {
+      const created = new Date(data.created_at)
+
+      setCreatedDay(String(created.getDate()))
+      setCreatedMonth(String(created.getMonth() + 1))
+      setCreatedYear(String(created.getFullYear()))
+    }
+
+    if (data.completed_at) {
+      const completed = new Date(data.completed_at)
+
+      setCompletedDay(String(completed.getDate()))
+      setCompletedMonth(String(completed.getMonth() + 1))
+      setCompletedYear(String(completed.getFullYear()))
+    }
   }
 
   function updateField<K extends keyof ElementData>(
@@ -76,16 +100,31 @@ export default function EditPage({
       newStatus = "completed"
     }
 
+    const createdDate = new Date(
+      Number(createdYear),
+      Number(createdMonth) - 1,
+      Number(createdDay)
+    )
+    
+    const completedDate =
+      completedDay && completedMonth && completedYear
+        ? new Date(
+            Number(completedYear),
+            Number(completedMonth) - 1,
+            Number(completedDay)
+          )
+        : null
+
     await supabase
       .from("elements")
       .update({
         title: event.title.trim() === "" ? undefined : event.title,
         dhikr_text: event.dhikr_text?.trim() === "" ? undefined : event.dhikr_text,
         target: event.target === 0 ? undefined : event.target,
-        created_at: event.created_at,
+        created_at: createdDate.toISOString(),
         completed_at:
           newStatus === "completed"
-            ? event.completed_at || new Date().toISOString()
+            ? completedDate?.toISOString() || new Date().toISOString()
             : null,
         status: newStatus,
       })
@@ -129,28 +168,6 @@ export default function EditPage({
         </div>
       </main>
     )
-  }
-
-  // helpers for splitting dates
-  const created = event.created_at ? new Date(event.created_at) : null
-  const completed = event.completed_at ? new Date(event.completed_at) : null
-
-  function updateCreated(d: number, m: number, y: number) {
-    if (!created) return
-    const updated = new Date(created)
-    updated.setDate(d)
-    updated.setMonth(m - 1)
-    updated.setFullYear(y)
-    updateField("created_at", updated.toISOString())
-  }
-
-  function updateCompleted(d: number, m: number, y: number) {
-    if (!completed) return
-    const updated = new Date(completed)
-    updated.setDate(d)
-    updated.setMonth(m - 1)
-    updated.setFullYear(y)
-    updateField("completed_at", updated.toISOString())
   }
 
   return (
@@ -231,42 +248,24 @@ export default function EditPage({
             <input
               type="number"
               placeholder="DD"
-              value={created ? created.getDate() : ""}
-              onChange={(e) =>
-                updateCreated(
-                  Number(e.target.value),
-                  created ? created.getMonth() + 1 : 1,
-                  created ? created.getFullYear() : 2026
-                )
-              }
+              value={createdDay}
+              onChange={(e) => setCreatedDay(e.target.value)}
               className="bg-[#1F2937] p-2 rounded text-white"
             />
 
             <input
               type="number"
               placeholder="MM"
-              value={created ? created.getMonth() + 1 : ""}
-              onChange={(e) =>
-                updateCreated(
-                  created ? created.getDate() : 1,
-                  Number(e.target.value),
-                  created ? created.getFullYear() : 2026
-                )
-              }
+              value={createdMonth}
+              onChange={(e) => setCreatedMonth(e.target.value)}
               className="bg-[#1F2937] p-2 rounded text-white"
             />
 
             <input
               type="number"
               placeholder="YYYY"
-              value={created ? created.getFullYear() : ""}
-              onChange={(e) =>
-                updateCreated(
-                  created ? created.getDate() : 1,
-                  created ? created.getMonth() + 1 : 1,
-                  Number(e.target.value)
-                )
-              }
+              value={createdYear}
+              onChange={(e) => setCreatedYear(e.target.value)}
               className="bg-[#1F2937] p-2 rounded text-white"
             />
           </div>
@@ -281,42 +280,24 @@ export default function EditPage({
               <input
                 type="number"
                 placeholder="DD"
-                value={completed ? completed.getDate() : ""}
-                onChange={(e) =>
-                  updateCompleted(
-                    Number(e.target.value),
-                    completed ? completed.getMonth() + 1 : 1,
-                    completed ? completed.getFullYear() : 2026
-                  )
-                }
+                value={completedDay}
+                onChange={(e) => setCompletedDay(e.target.value)}
                 className="bg-[#1F2937] p-2 rounded text-white"
               />
 
               <input
                 type="number"
                 placeholder="MM"
-                value={completed ? completed.getMonth() + 1 : ""}
-                onChange={(e) =>
-                  updateCompleted(
-                    completed ? completed.getDate() : 1,
-                    Number(e.target.value),
-                    completed ? completed.getFullYear() : 2026
-                  )
-                }
+                value={completedMonth}
+                onChange={(e) => setCompletedMonth(e.target.value)}
                 className="bg-[#1F2937] p-2 rounded text-white"
               />
 
               <input
                 type="number"
                 placeholder="YYYY"
-                value={completed ? completed.getFullYear() : ""}
-                onChange={(e) =>
-                  updateCompleted(
-                    completed ? completed.getDate() : 1,
-                    completed ? completed.getMonth() + 1 : 1,
-                    Number(e.target.value)
-                  )
-                }
+                value={completedYear}
+                onChange={(e) => setCompletedYear(e.target.value)}
                 className="bg-[#1F2937] p-2 rounded text-white"
               />
             </div>

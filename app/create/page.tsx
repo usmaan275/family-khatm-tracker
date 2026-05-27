@@ -11,12 +11,13 @@ export default function CreatePage() {
   const [title, setTitle] = useState("")
   const [target, setTarget] = useState("")
   const [dhikrText, setDhikrText] = useState("")
+  const [creating, setCreating] = useState(false)
   const [loading, setLoading] = useState(false)
 
   async function handleCreate() {
-    setLoading(true)
+    setCreating(true)
     if (!title || (type === "dhikr" && (!dhikrText || !target || Number(target) <= 0))) {
-      setLoading(false)
+      setCreating(false)
       return
     }
 
@@ -37,7 +38,7 @@ export default function CreatePage() {
     if (error) {
       console.error(error)
       alert("Error creating event")
-      setLoading(false)
+      setCreating(false)
       return
     }
     if (type === "quran") {
@@ -56,12 +57,23 @@ export default function CreatePage() {
       if (juzError) {
         console.error(juzError)
         alert("Error creating juz rows")
-        setLoading(false)
+        setCreating(false)
         return
       }
     }
 
     router.push("/")
+  }
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#070B14] flex items-center justify-center text-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading...</p>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -70,7 +82,11 @@ export default function CreatePage() {
       {/* Back */}
       <button
         onClick={() => {
-          router.back()
+          setLoading(true)
+      
+          setTimeout(() => {
+            router.back()
+          }, 100)
         }}
         className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700 mb-4"
       >
@@ -133,9 +149,9 @@ export default function CreatePage() {
       <button
         onClick={handleCreate}
         className="w-full bg-green-600 hover:bg-green-500 transition text-white py-3 rounded-xl shadow-lg"
-        disabled={loading}
+        disabled={creating}
       >
-        {loading ? "Creating..." : "Create"}
+        {creating ? "Creating..." : "Create"}
       </button>
 
     </main>
