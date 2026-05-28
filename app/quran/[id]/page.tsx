@@ -165,7 +165,7 @@ export default function QuranPage({
         <button
           onClick={handleDone}
           disabled={saving}
-          className="w-22 h-10 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+          className="w-22 h-10 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium border border-green-300"
         >
           {saving ? "Saving..." : "Done"}
         </button>
