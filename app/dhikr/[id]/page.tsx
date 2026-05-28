@@ -233,7 +233,7 @@ export default function DhikrPage({
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
-          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition"
+          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
         >
           <i className="fa fa-home" aria-hidden="true"></i>
         </button>
@@ -246,7 +246,7 @@ export default function DhikrPage({
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
-          className="w-22 h-10 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium border border-green-300"
+          className="w-22 h-10 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
         >
           {leaving ? "Saving..." : "Done"}
         </button>
