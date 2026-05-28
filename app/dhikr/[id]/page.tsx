@@ -233,7 +233,7 @@ export default function DhikrPage({
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
-          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition"
         >
           <i className="fa fa-home" aria-hidden="true"></i>
         </button>
