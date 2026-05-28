@@ -22,6 +22,9 @@ export default function CompletedPage() {
 
   const [events, setEvents] = useState<Element[]>([])
   const [loading, setLoading] = useState(true)
+  
+  const [quranData, setQuranData] = useState<any[]>([])
+  const [dhikrData, setDhikrData] = useState<any[]>([])
 
   const [search, setSearch] = useState("")
 
@@ -38,9 +41,47 @@ export default function CompletedPage() {
       .select("*")
       .eq("status", "completed")
 
+    const { data: quranData } = await supabase
+      .from("quran_juz")
+      .select("element_id, completed")
+
+    const { data: dhikrData } = await supabase
+      .from("dhikr_contributions")
+      .select("element_id, amount")
+
     setEvents(data || [])
 
+    setQuranData(quranData || [])
+    setDhikrData(dhikrData || [])
+
     setLoading(false)
+  }
+
+  function getQuranProgress(elementId: string) {
+
+    const rows =
+      quranData?.filter(
+        (q) => q.element_id === elementId
+      ) || []
+  
+    const done =
+      rows.filter((r) => r.completed).length
+  
+    return done
+  }
+  
+  function getDhikrTotal(elementId: string) {
+  
+    return (
+      dhikrData
+        ?.filter(
+          (d) => d.element_id === elementId
+        )
+        .reduce(
+          (sum, d) => sum + d.amount,
+          0
+        ) || 0
+    )
   }
 
   const cleanText = (text : string) => {
@@ -146,13 +187,13 @@ export default function CompletedPage() {
             setSearch(e.target.value)
           }
           className="
-              flex-1
-              bg-[#111827]
-              border border-[#1F2937]
-              rounded-xl
-              px-4 py-3
-              outline-none
-              focus:border-green-500
+            flex-1
+            bg-[#111827]
+            border border-[#1F2937]
+            rounded-xl
+            px-4 py-3
+            outline-none
+            focus:border-green-500
           "
         />
 
@@ -162,12 +203,12 @@ export default function CompletedPage() {
             setSort(e.target.value)
           }
           className="
-              bg-[#111827]
-              border border-[#1F2937]
-              rounded-xl
-              px-4 py-3
-              outline-none
-              focus:border-green-500
+            bg-[#111827]
+            border border-[#1F2937]
+            rounded-xl
+            px-4 py-3
+            outline-none
+            focus:border-green-500
           "
         >
           <option value="completed_desc">
@@ -197,13 +238,13 @@ export default function CompletedPage() {
           <div
             key={item.id}
             className="
-                p-4
-                bg-[#111827]
-                border border-[#1F2937]
-                rounded-2xl
-                opacity-70
-                hover:border-green-600
-                transition-all duration-300
+              p-4
+              bg-[#111827]
+              border border-[#1F2937]
+              rounded-2xl
+              opacity-70
+              hover:border-green-600
+              transition-all duration-300
             "
           >
 
@@ -225,14 +266,14 @@ export default function CompletedPage() {
               <Link
                 href={`/edit/${item.id}`}
                 className="
-                    px-3 py-2
-                    rounded-lg
-                    bg-green-600
-                    hover:bg-green-500
-                    transition
-                    text-xs
-                    font-semibold
-                    ml-3
+                  px-3 py-2
+                  rounded-lg
+                  bg-green-600
+                  hover:bg-green-500
+                  transition
+                  text-xs
+                  font-semibold
+                  ml-3
                 "
               >
                 Edit
@@ -253,6 +294,21 @@ export default function CompletedPage() {
                   ? "Quran Khatm"
                   : item.dhikr_text}
               </p>
+
+              {/* Quran Progress */}
+              {item.type === "quran" && (
+                <p className="text-sm mt-2 text-green-400">
+                  {getQuranProgress(item.id)} / 30 completed
+                </p>
+              )}
+
+              {/* Dhikr Progress */}
+              {item.type === "dhikr" && (
+                <p className="text-sm mt-2 text-green-400">
+                  {getDhikrTotal(item.id).toLocaleString()} /{" "}
+                  {item.target?.toLocaleString()}
+                </p>
+              )}
 
               <p className="text-xs mt-3 text-gray-500">
                 Created:{" "}
