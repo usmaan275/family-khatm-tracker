@@ -179,7 +179,7 @@ export default function EditPage({
         <button
           onClick={save}
           disabled={saving}
-          className="w-22 py-2 rounded-xl bg-green-600 hover:bg-green-500 disabled:opacity-70 transition"
+          className="w-22 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition"
         >
           {saving ? "Saving..." : "Done"}
         </button>
