@@ -128,7 +128,7 @@ export default function QuranPage({
   async function handleDone() {
     setSaving(true)
 
-    router.back()
+    router.push("/")
 
     setTimeout(() => {
       router.refresh()
@@ -156,16 +156,16 @@ export default function QuranPage({
         <button
           onClick={handleDone}
           disabled={saving}
-          className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
         >
-          Back
+          <i className="fa fa-home" aria-hidden="true"></i>
         </button>
 
         {/* Done */}
         <button
           onClick={handleDone}
           disabled={saving}
-          className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+          className="w-22 h-10 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
         >
           {saving ? "Saving..." : "Done"}
         </button>
