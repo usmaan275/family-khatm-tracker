@@ -30,14 +30,6 @@ export default function EditPage({
 
   const [showCreatedPicker, setShowCreatedPicker] = useState(false)
   const [showCompletedPicker, setShowCompletedPicker] = useState(false)
-  
-  const [createdDay, setCreatedDay] = useState("")
-  const [createdMonth, setCreatedMonth] = useState("")
-  const [createdYear, setCreatedYear] = useState("")
-  
-  const [completedDay, setCompletedDay] = useState("")
-  const [completedMonth, setCompletedMonth] = useState("")
-  const [completedYear, setCompletedYear] = useState("")
 
   useEffect(() => {
     fetchEvent()
@@ -51,22 +43,6 @@ export default function EditPage({
       .single()
 
     setEvent(data)
-
-    if (data.created_at) {
-      const created = new Date(data.created_at)
-
-      setCreatedDay(String(created.getDate()))
-      setCreatedMonth(String(created.getMonth() + 1))
-      setCreatedYear(String(created.getFullYear()))
-    }
-
-    if (data.completed_at) {
-      const completed = new Date(data.completed_at)
-
-      setCompletedDay(String(completed.getDate()))
-      setCompletedMonth(String(completed.getMonth() + 1))
-      setCompletedYear(String(completed.getFullYear()))
-    }
   }
 
   function updateField<K extends keyof ElementData>(
@@ -100,31 +76,16 @@ export default function EditPage({
       newStatus = "completed"
     }
 
-    const createdDate = new Date(
-      Number(createdYear),
-      Number(createdMonth) - 1,
-      Number(createdDay)
-    )
-    
-    const completedDate =
-      completedDay && completedMonth && completedYear
-        ? new Date(
-            Number(completedYear),
-            Number(completedMonth) - 1,
-            Number(completedDay)
-          )
-        : null
-
     await supabase
       .from("elements")
       .update({
         title: event.title.trim() === "" ? undefined : event.title,
         dhikr_text: event.dhikr_text?.trim() === "" ? undefined : event.dhikr_text,
         target: event.target === 0 ? undefined : event.target,
-        created_at: createdDate.toISOString(),
+        created_at: event.created_at,
         completed_at:
           newStatus === "completed"
-            ? completedDate?.toISOString() || new Date().toISOString()
+            ? event.completed_at || new Date().toISOString()
             : null,
         status: newStatus,
       })
@@ -168,6 +129,28 @@ export default function EditPage({
         </div>
       </main>
     )
+  }
+
+  // helpers for splitting dates
+  const created = event.created_at ? new Date(event.created_at) : null
+  const completed = event.completed_at ? new Date(event.completed_at) : null
+
+  function updateCreated(d: number, m: number, y: number) {
+    if (!created) return
+    const updated = new Date(created)
+    updated.setDate(d)
+    updated.setMonth(m - 1)
+    updated.setFullYear(y)
+    updateField("created_at", updated.toISOString())
+  }
+
+  function updateCompleted(d: number, m: number, y: number) {
+    if (!completed) return
+    const updated = new Date(completed)
+    updated.setDate(d)
+    updated.setMonth(m - 1)
+    updated.setFullYear(y)
+    updateField("completed_at", updated.toISOString())
   }
 
   return (
@@ -245,29 +228,64 @@ export default function EditPage({
           <p className="text-sm text-gray-400 mb-3">Created At</p>
 
           <div className="grid grid-cols-3 gap-2">
-            <input
-              type="number"
-              placeholder="DD"
-              value={createdDay}
-              onChange={(e) => setCreatedDay(e.target.value)}
-              className="bg-[#1F2937] p-2 rounded text-white"
-            />
 
-            <input
-              type="number"
-              placeholder="MM"
-              value={createdMonth}
-              onChange={(e) => setCreatedMonth(e.target.value)}
+            {/* DAY */}
+            <select
+              value={created ? created.getDate() : ""}
+              onChange={(e) =>
+                updateCreated(
+                  Number(e.target.value),
+                  created ? created.getMonth() + 1 : 1,
+                  created ? created.getFullYear() : 2026
+                )
+              }
               className="bg-[#1F2937] p-2 rounded text-white"
-            />
+            >
+              {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
 
-            <input
-              type="number"
-              placeholder="YYYY"
-              value={createdYear}
-              onChange={(e) => setCreatedYear(e.target.value)}
+            {/* MONTH */}
+            <select
+              value={created ? created.getMonth() + 1 : ""}
+              onChange={(e) =>
+                updateCreated(
+                  created ? created.getDate() : 1,
+                  Number(e.target.value),
+                  created ? created.getFullYear() : 2026
+                )
+              }
               className="bg-[#1F2937] p-2 rounded text-white"
-            />
+            >
+              {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+
+            {/* YEAR */}
+            <select
+              value={created ? created.getFullYear() : ""}
+              onChange={(e) =>
+                updateCreated(
+                  created ? created.getDate() : 1,
+                  created ? created.getMonth() + 1 : 1,
+                  Number(e.target.value)
+                )
+              }
+              className="bg-[#1F2937] p-2 rounded text-white"
+            >
+              {Array.from({ length: 100 }, (_, i) => 2000 + i).map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+
           </div>
         </div>
 
@@ -277,29 +295,64 @@ export default function EditPage({
             <p className="text-sm text-gray-400 mb-3">Completed At</p>
 
             <div className="grid grid-cols-3 gap-2">
-              <input
-                type="number"
-                placeholder="DD"
-                value={completedDay}
-                onChange={(e) => setCompletedDay(e.target.value)}
-                className="bg-[#1F2937] p-2 rounded text-white"
-              />
 
-              <input
-                type="number"
-                placeholder="MM"
-                value={completedMonth}
-                onChange={(e) => setCompletedMonth(e.target.value)}
+              {/* DAY */}
+              <select
+                value={completed ? completed.getDate() : ""}
+                onChange={(e) =>
+                  updateCompleted(
+                    Number(e.target.value),
+                    completed ? completed.getMonth() + 1 : 1,
+                    completed ? completed.getFullYear() : 2026
+                  )
+                }
                 className="bg-[#1F2937] p-2 rounded text-white"
-              />
+              >
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
+              </select>
 
-              <input
-                type="number"
-                placeholder="YYYY"
-                value={completedYear}
-                onChange={(e) => setCompletedYear(e.target.value)}
+              {/* MONTH */}
+              <select
+                value={completed ? completed.getMonth() + 1 : ""}
+                onChange={(e) =>
+                  updateCompleted(
+                    completed ? completed.getDate() : 1,
+                    Number(e.target.value),
+                    completed ? completed.getFullYear() : 2026
+                  )
+                }
                 className="bg-[#1F2937] p-2 rounded text-white"
-              />
+              >
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+
+              {/* YEAR */}
+              <select
+                value={completed ? completed.getFullYear() : ""}
+                onChange={(e) =>
+                  updateCompleted(
+                    completed ? completed.getDate() : 1,
+                    completed ? completed.getMonth() + 1 : 1,
+                    Number(e.target.value)
+                  )
+                }
+                className="bg-[#1F2937] p-2 rounded text-white"
+              >
+                {Array.from({ length: 100 }, (_, i) => 2000 + i).map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+
             </div>
           </div>
         )}
