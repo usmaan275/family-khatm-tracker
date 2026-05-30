@@ -24,6 +24,7 @@ export default function QuranPage({
   const [juzList, setJuzList] = useState<JuzRow[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [returning, setReturning] = useState(false)
 
   const [khatmTitle, setKhatmTitle] = useState("")
 
@@ -125,8 +126,12 @@ export default function QuranPage({
     await checkQuranCompletion(updated)
   }
 
-  async function handleDone() {
-    setSaving(true)
+  async function handleDone(buttonType?: "back" | "done") {
+    if (buttonType === "back") {
+      setReturning(true)
+    } else {
+      setSaving(true)
+    }
 
     router.push("/")
 
@@ -154,16 +159,20 @@ export default function QuranPage({
 
         {/* Back */}
         <button
-          onClick={handleDone}
-          disabled={saving}
-          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+          onClick={() => handleDone("back")}
+          disabled={returning}
+          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white disabled:opacity-70 transition border border-gray-700"
         >
-          <i className="fa fa-home" aria-hidden="true"></i>
+          {returning ? (
+            "..."
+          ) : (
+            <i className="fa fa-home" aria-hidden="true"></i>
+          )}
         </button>
 
         {/* Done */}
         <button
-          onClick={handleDone}
+          onClick={() => handleDone("done")}
           disabled={saving}
           className="w-22 h-10 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
         >
@@ -280,7 +289,7 @@ export default function QuranPage({
         <div className="mt-10">
 
           <button
-            onClick={handleDone}
+            onClick={() => handleDone("done")}
             disabled={saving}
             className="w-full bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold disabled:opacity-70"
           >

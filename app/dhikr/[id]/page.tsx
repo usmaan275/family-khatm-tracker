@@ -39,6 +39,7 @@ export default function DhikrPage({
 
   const [saving, setSaving] = useState(false)
   const [leaving, setLeaving] = useState(false)
+  const [returning, setReturning] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -228,14 +229,18 @@ export default function DhikrPage({
         {/* Back */}
         <button
           onClick={() => {
-            setLeaving(true)
+            setReturning(true)
             router.push("/")
             setTimeout(() => router.refresh(), 100)
           }}
-          disabled={leaving}
-          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+          disabled={returning}
+          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white disabled:opacity-70 transition border border-gray-700"
         >
-          <i className="fa fa-home" aria-hidden="true"></i>
+          {returning ? (
+            "..."
+          ) : (
+            <i className="fa fa-home" aria-hidden="true"></i>
+          )}
         </button>
 
         {/* Done */}
@@ -284,7 +289,13 @@ export default function DhikrPage({
 
           <AnimatePresence>
             {[...contributions]
-              .sort((a, b) => b.amount - a.amount)
+              .sort((a, b) => {
+                if (b.amount !== a.amount) {
+                  return b.amount - a.amount
+                }
+              
+                return a.name.localeCompare(b.name)
+              })
               .map((entry) => {
 
                 const isEditing = editingId === entry.id
