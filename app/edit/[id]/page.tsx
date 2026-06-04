@@ -70,10 +70,13 @@ export default function EditPage({
     const total =
       contributions?.reduce((sum, c) => sum + c.amount, 0) || 0
 
-    let newStatus: "active" | "completed" = "active"
+    let newStatus = event.status
 
-    if (event.target && total >= event.target) {
-      newStatus = "completed"
+    if (event.type === "dhikr") {
+      newStatus =
+        event.target && total >= event.target
+          ? "completed"
+          : "active"
     }
 
     await supabase
