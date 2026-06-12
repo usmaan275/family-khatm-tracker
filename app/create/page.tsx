@@ -148,7 +148,7 @@ export default function CreatePage() {
       {/* Create button */}
       <button
         onClick={handleCreate}
-        className="w-full bg-green-600 hover:bg-green-500 transition text-white py-3 rounded-xl shadow-lg"
+        className="w-full bg-green-600 hover:bg-green-500 transition text-white py-3 rounded-xl shadow-lg disabled:opacity-70"
         disabled={creating}
       >
         {creating ? "Creating..." : "Create"}
