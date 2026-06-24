@@ -64,31 +64,15 @@ export default function TasbihPage({
   useEffect(() => {
 
     function updateSize() {
-
-      const width =
-        window.innerWidth * 0.9
-
-      const height =
-        (window.innerHeight - 290) * 0.9
-
-      setCounterSize(
-        Math.min(width, height)
-      )
+      const width = window.innerWidth * 0.9
+      const height = (window.innerHeight - 290) * 0.9
+      setCounterSize(Math.min(width, height))
     }
-
+    
     updateSize()
-
-    window.addEventListener(
-      "resize",
-      updateSize
-    )
-
-    return () =>
-      window.removeEventListener(
-        "resize",
-        updateSize
-      )
-
+    window.addEventListener("orientationchange", updateSize)
+    return () => window.removeEventListener("orientationchange", updateSize)
+  
   }, [])
 
   async function fetchData() {
