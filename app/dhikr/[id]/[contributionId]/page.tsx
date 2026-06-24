@@ -296,27 +296,6 @@ export default function TasbihPage({
     }
   }, [])
 
-  useEffect(() => {
-
-    if (!window.visualViewport) return
-  
-    function handleViewportChange() {
-      window.scrollTo(0, 0)
-    }
-  
-    window.visualViewport.addEventListener(
-      "resize",
-      handleViewportChange
-    )
-  
-    return () =>
-      window.visualViewport?.removeEventListener(
-        "resize",
-        handleViewportChange
-      )
-  
-  }, [])
-
   if (!event || !contribution) {
 
     return (
