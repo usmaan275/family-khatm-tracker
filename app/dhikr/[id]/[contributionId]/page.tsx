@@ -68,7 +68,7 @@ export default function TasbihPage({
       const height = (window.innerHeight - 290) * 0.9
       setCounterSize(Math.min(width, height))
     }
-    
+
     updateSize()
     window.addEventListener("orientationchange", updateSize)
     return () => window.removeEventListener("orientationchange", updateSize)
@@ -287,7 +287,7 @@ export default function TasbihPage({
     const originalBody = document.body.style.cssText
     const originalHtml = document.documentElement.style.cssText
 
-    document.body.style.cssText = "overflow:hidden; position:fixed; width:100%;"
+    document.body.style.cssText = "overflow:hidden; width:100%;"
     document.documentElement.style.cssText = "overflow:hidden; height:100%;"
 
     return () => {
