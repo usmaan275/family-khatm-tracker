@@ -43,9 +43,9 @@ export const metadata: Metadata = {
   creator: "Jomshed Miah Family",
 
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/icon.png",
+    icon: "/favicon-v2.ico",
+    shortcut: "/favicon-v2.ico",
+    apple: "/icon-v2.png",
   },
 
   openGraph: {
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 
     images: [
       {
-        url: "/icon.png",
+        url: "/icon-v2.png",
         width: 512,
         height: 512,
         alt: "Family Khatm Tracker",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     description:
       "Track Quran khatms and dhikr goals together as a family.",
 
-    images: ["/icon.png"],
+    images: ["/icon-v2.png"],
   },
 
   themeColor: "#070B14",
