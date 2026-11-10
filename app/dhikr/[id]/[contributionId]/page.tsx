@@ -54,25 +54,8 @@ export default function TasbihPage({
   const [leaving, setLeaving] =
     useState(false)
 
-  const [counterSize, setCounterSize] =
-    useState(320)
-
   useEffect(() => {
     fetchData()
-  }, [])
-
-  useEffect(() => {
-
-    function updateSize() {
-      const width = window.innerWidth * 0.9
-      const height = (window.innerHeight - 290) * 0.9
-      setCounterSize(Math.min(width, height))
-    }
-
-    updateSize()
-    window.addEventListener("orientationchange", updateSize)
-    return () => window.removeEventListener("orientationchange", updateSize)
-  
   }, [])
 
   async function fetchData() {
@@ -316,10 +299,10 @@ export default function TasbihPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] text-white px-5 py-5 overflow-hidden">
+    <main className="fixed inset-x-0 top-0 h-[100dvh] flex flex-col overflow-hidden bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] text-white px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))]">
 
       {/* Top Bar */}
-      <div className="relative flex items-center justify-between mb-6 min-h-[44px]">
+      <div className="relative flex items-center justify-between mb-4 min-h-[44px] shrink-0">
 
         {/* 📊 */}
         <button
@@ -360,15 +343,13 @@ export default function TasbihPage({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center min-h-[95dvh]">
+      <div className="flex-1 min-h-0 w-full max-w-2xl mx-auto flex flex-col items-center">
 
         {/* Dhikr Text */}
-        <div className="flex items-end">
+        <div className="w-full shrink-0">
           <div
-            style={{
-              maxHeight: `${window.innerHeight * 0.18}px`
-            }}
             className={`
+              max-h-[18dvh]
               w-full
               max-w-2xl
               mb-4
@@ -390,7 +371,7 @@ export default function TasbihPage({
         </div>
 
         {/* Editable Info */}
-        <div className="w-full max-w-2xl flex gap-3 mb-4">
+        <div className="w-full max-w-2xl flex gap-3 mb-4 shrink-0">
 
           {/* Name */}
           <div className="flex-1">
@@ -480,12 +461,9 @@ export default function TasbihPage({
         </div>
 
         {/* Tasbih Counter */}
+        <div className="flex-1 min-h-0 w-full [container-type:size] flex items-center justify-center">
         <button
           onClick={incrementTasbih}
-          style={{
-            width: `${counterSize}px`,
-            aspectRatio: "1 / 1",
-          }}
           className="
             rounded-full
             bg-green-600
@@ -500,12 +478,9 @@ export default function TasbihPage({
             items-center
             justify-center
             select-none
-            mt-1
-            mb-1
             shrink-0
-            fixed bottom-2 left-1/2 -translate-x-1/2
-            w-[min(320px,90vw)]
-            aspect-square
+            w-[min(94cqw,94cqh)]
+            h-[min(94cqw,94cqh)]
           "
         >
 
@@ -522,6 +497,7 @@ export default function TasbihPage({
           </div>
 
         </button>
+        </div>
 
       </div>
 
