@@ -316,7 +316,7 @@ export default function TasbihPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#070B14] text-white px-5 py-5 overflow-hidden">
+    <main className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] text-white px-5 py-5 overflow-hidden">
 
       {/* Top Bar */}
       <div className="relative flex items-center justify-between mb-6 min-h-[44px]">
@@ -333,7 +333,7 @@ export default function TasbihPage({
             }, 100)
           }}
           disabled={leaving}
-          className="w-18 h-10 text-sm rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+          className="w-18 h-10 text-sm rounded-xl bg-green-600 hover:bg-green-500 active:scale-95 disabled:opacity-70 transition text-white font-medium shadow-md shadow-green-900/30"
         >
           {leaving ? "..." : "📊"}
         </button>
@@ -344,7 +344,7 @@ export default function TasbihPage({
             {event.title}
           </h1>
 
-          <p className="text-green-400 text-xs md:text-sm mt-0.5">
+          <p className="text-green-400 text-xs md:text-sm mt-0.5 font-medium">
             {total.toLocaleString()} / {event.target.toLocaleString()}
           </p>
         </div>
@@ -352,7 +352,7 @@ export default function TasbihPage({
         {/* Delete */}
         <button
           onClick={() => setShowDeleteModal(true)}
-          className="w-18 h-10 text-sm rounded-lg bg-[#5B1C1C] hover:bg-red-700 transition text-white font-medium"
+          className="w-18 h-10 text-sm rounded-xl bg-[#5B1C1C] hover:bg-red-700 active:scale-95 transition text-white font-medium"
         >
           Delete
         </button>
@@ -375,9 +375,10 @@ export default function TasbihPage({
               bg-[#111827]
               border border-[#1F2937]
               rounded-2xl
-              px-3 py-2
+              shadow-lg shadow-black/30
+              px-4 py-2
               text-center
-              text-xl
+              text-2xl
               text-white
               leading-loose
               overflow-y-auto
@@ -423,6 +424,8 @@ export default function TasbihPage({
                 text-lg
                 outline-none
                 focus:border-green-500
+                focus:ring-2 focus:ring-green-500/20
+                transition
               "
             />
 
@@ -467,6 +470,8 @@ export default function TasbihPage({
                 text-green-400
                 outline-none
                 focus:border-green-500
+                focus:ring-2 focus:ring-green-500/20
+                transition
               "
             />
 
@@ -484,10 +489,11 @@ export default function TasbihPage({
           className="
             rounded-full
             bg-green-600
+            ring-1 ring-green-400/30
             active:scale-[0.95]
             hover:scale-[1.02]
             transition-transform duration-400 ease-out
-            shadow-[0_0_40px_rgba(34,197,94,0.3)]
+            shadow-[0_0_60px_rgba(34,197,94,0.3)]
             transition
             shadow-2xl
             flex
@@ -529,11 +535,11 @@ export default function TasbihPage({
             onClick={() =>
               setShowDeleteModal(false)
             }
-            className="absolute inset-0 bg-black/60"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
 
           {/* Modal */}
-          <div className="relative z-10 w-[90%] max-w-sm bg-[#111827] border border-[#1F2937] rounded-3xl p-6">
+          <div className="relative z-10 w-[90%] max-w-sm bg-[#111827] border border-[#1F2937] rounded-3xl p-6 shadow-2xl shadow-black/50">
 
             <h2 className="text-xl font-bold mb-2 text-center">
               Delete User
@@ -551,7 +557,7 @@ export default function TasbihPage({
                 onClick={() =>
                   setShowDeleteModal(false)
                 }
-                className="flex-1 py-3 rounded-2xl bg-[#1F2937] hover:bg-[#374151] transition font-semibold"
+                className="flex-1 py-3 rounded-2xl bg-[#1F2937] hover:bg-[#374151] active:scale-[0.98] transition font-semibold"
               >
                 No
               </button>
@@ -561,7 +567,7 @@ export default function TasbihPage({
                 onClick={
                   deleteContribution
                 }
-                className="flex-1 py-3 rounded-2xl bg-red-700 hover:bg-red-600 transition font-semibold"
+                className="flex-1 py-3 rounded-2xl bg-red-700 hover:bg-red-600 active:scale-[0.98] transition font-semibold"
               >
                 Yes
               </button>

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
+import { arabicFont } from "@/lib/fonts"
 export const dynamic = "force-dynamic"
 
 export default async function Home() {
@@ -52,18 +53,29 @@ export default async function Home() {
     )
   }
 
+  /* Visual only: width of the progress bar */
+  function getPercent(item: any) {
+    if (item.type === "quran") {
+      return Math.min(100, (getQuranProgress(item.id) / 30) * 100)
+    }
+    if (!item.target) return 0
+    return Math.min(100, (getDhikrTotal(item.id) / item.target) * 100)
+  }
+
   return (
-    <main className="min-h-screen bg-[#070B14] text-white p-6">
+    <main className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] text-white px-5 py-8">
+
+      <div className="mx-auto max-w-2xl">
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center gap-4 mb-10">
 
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold tracking-tight leading-snug">
           Jomshed Miah Family Khatm Tracker
         </h1>
 
-        <Link href="/create">
-          <div className="w-11 h-11 flex items-center justify-center rounded-full bg-green-600 text-white text-2xl shadow-lg hover:scale-105 transition">
+        <Link href="/create" className="shrink-0">
+          <div className="w-11 h-11 flex items-center justify-center rounded-full bg-green-600 text-white text-2xl shadow-lg shadow-green-900/40 ring-1 ring-green-400/30 hover:bg-green-500 hover:scale-105 active:scale-95 transition">
             +
           </div>
         </Link>
@@ -71,9 +83,9 @@ export default async function Home() {
       </div>
 
       {/* ACTIVE */}
-      <section className="mb-10">
+      <section className="mb-12">
 
-        <h2 className="text-lg font-semibold mb-3">
+        <h2 className="text-lg font-semibold mb-4 text-gray-200">
           Active ({active.length})
         </h2>
 
@@ -91,7 +103,7 @@ export default async function Home() {
 
               <div
                 key={item.id}
-                className="p-4 bg-[#111827] border border-[#1F2937] rounded-2xl shadow-lg hover:border-green-600 transition my-4"
+                className="p-5 bg-[#111827] border border-[#1F2937] rounded-2xl shadow-lg shadow-black/30 hover:border-green-600 transition"
               >
 
                 {/* TOP ROW: Title + Edit */}
@@ -106,7 +118,7 @@ export default async function Home() {
                     }
                     className="flex-1"
                   >
-                    <h3 className="font-semibold text-lg">
+                    <h3 className="font-semibold text-lg leading-snug">
                       {item.title}
                     </h3>
                   </Link>
@@ -114,7 +126,7 @@ export default async function Home() {
                   {/* EDIT BUTTON (SEPARATE LINK) */}
                   <Link
                     href={`/edit/${item.id}`}
-                    className="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-500 transition text-xs font-semibold ml-3"
+                    className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 active:scale-95 transition text-xs font-semibold ml-3 shadow-md shadow-green-900/30"
                   >
                     Edit
                   </Link>
@@ -128,8 +140,15 @@ export default async function Home() {
                       ? `/quran/${item.id}`
                       : `/dhikr/${item.id}`
                   }
+                  className="block"
                 >
-                  <p className="text-sm text-gray-400 mt-1">
+                  <p
+                    className={`mt-1 text-gray-400 ${
+                      item.type === "quran"
+                        ? "text-sm"
+                        : `${arabicFont.className} text-xl leading-relaxed`
+                    }`}
+                  >
                     {item.type === "quran"
                       ? "Quran Khatm"
                       : item.dhikr_text}
@@ -137,20 +156,28 @@ export default async function Home() {
 
                   {/* Quran Progress */}
                   {item.type === "quran" && (
-                    <p className="text-sm mt-2 text-green-400">
+                    <p className="text-sm mt-3 text-green-400 font-medium">
                       {getQuranProgress(item.id)} / 30 completed
                     </p>
                   )}
 
                   {/* Dhikr Progress */}
                   {item.type === "dhikr" && (
-                    <p className="text-sm mt-2 text-green-400">
+                    <p className="text-sm mt-3 text-green-400 font-medium">
                       {getDhikrTotal(item.id).toLocaleString()} /{" "}
                       {item.target?.toLocaleString()}
                     </p>
                   )}
 
-                  <p className="text-xs mt-3 text-gray-500">
+                  {/* Progress bar */}
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1F2937]">
+                    <div
+                      className="h-full rounded-full bg-green-500"
+                      style={{ width: `${getPercent(item)}%` }}
+                    />
+                  </div>
+
+                  <p className="text-xs mt-4 text-gray-500">
                     Created:{" "}
                     {new Date(item.created_at).toLocaleString("en-GB", {
                       day: "2-digit",
@@ -172,7 +199,7 @@ export default async function Home() {
       {/* COMPLETED */}
       <section>
 
-        <h2 className="text-lg font-semibold mb-3">
+        <h2 className="text-lg font-semibold mb-4 text-gray-200">
           Completed ({completed.length})
         </h2>
 
@@ -190,7 +217,7 @@ export default async function Home() {
 
               <div
                 key={item.id}
-                className="p-4 bg-[#111827] border border-[#1F2937] rounded-2xl opacity-70 hover:border-green-600 transition my-4"
+                className="p-5 bg-[#111827] border border-[#1F2937] rounded-2xl opacity-70 hover:opacity-100 hover:border-green-600 transition"
               >
 
                 {/* TOP ROW: Title + Edit */}
@@ -205,7 +232,7 @@ export default async function Home() {
                     }
                     className="flex-1"
                   >
-                    <h3 className="font-semibold text-lg">
+                    <h3 className="font-semibold text-lg leading-snug">
                       {item.title}
                     </h3>
                   </Link>
@@ -213,7 +240,7 @@ export default async function Home() {
                   {/* EDIT BUTTON (SEPARATE LINK) */}
                   <Link
                     href={`/edit/${item.id}`}
-                    className="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-500 transition text-xs font-semibold ml-3"
+                    className="px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 active:scale-95 transition text-xs font-semibold ml-3 shadow-md shadow-green-900/30"
                   >
                     Edit
                   </Link>
@@ -227,9 +254,16 @@ export default async function Home() {
                       ? `/quran/${item.id}`
                       : `/dhikr/${item.id}`
                   }
+                  className="block"
                 >
 
-                  <p className="text-sm text-gray-400 mt-1">
+                  <p
+                    className={`mt-1 text-gray-400 ${
+                      item.type === "quran"
+                        ? "text-sm"
+                        : `${arabicFont.className} text-xl leading-relaxed`
+                    }`}
+                  >
                     {item.type === "quran"
                       ? "Quran Khatm"
                       : item.dhikr_text}
@@ -237,38 +271,48 @@ export default async function Home() {
 
                   {/* Quran Progress */}
                   {item.type === "quran" && (
-                    <p className="text-sm mt-2 text-green-400">
+                    <p className="text-sm mt-3 text-green-400 font-medium">
                       {getQuranProgress(item.id)} / 30 completed
                     </p>
                   )}
 
                   {/* Dhikr Progress */}
                   {item.type === "dhikr" && (
-                    <p className="text-sm mt-2 text-green-400">
+                    <p className="text-sm mt-3 text-green-400 font-medium">
                       {getDhikrTotal(item.id).toLocaleString()} /{" "}
                       {item.target?.toLocaleString()}
                     </p>
                   )}
 
-                  <p className="text-xs mt-3 text-gray-500">
-                    Created:{" "}
-                    {new Date(item.created_at).toLocaleString("en-GB", {
-                      day: "2-digit",
-                      month: "long",
-                      year: "numeric"
-                    })}
-                  </p>
+                  {/* Progress bar */}
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1F2937]">
+                    <div
+                      className="h-full rounded-full bg-green-500"
+                      style={{ width: `${getPercent(item)}%` }}
+                    />
+                  </div>
 
-                  <p className="text-xs mt-3 text-gray-500">
-                    Completed:{" "}
-                    {item.completed_at
-                      ? new Date(item.completed_at).toLocaleString("en-GB", {
+                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
+                    <p className="text-xs text-gray-500">
+                      Created:{" "}
+                      {new Date(item.created_at).toLocaleString("en-GB", {
                         day: "2-digit",
                         month: "long",
                         year: "numeric"
-                      })
-                      : "—"}
-                  </p>
+                      })}
+                    </p>
+
+                    <p className="text-xs text-gray-500">
+                      Completed:{" "}
+                      {item.completed_at
+                        ? new Date(item.completed_at).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric"
+                        })
+                        : "—"}
+                    </p>
+                  </div>
 
                 </Link>
 
@@ -280,15 +324,17 @@ export default async function Home() {
               {completed.length > 3 && (
                 <Link
                   href="/completed"
-                    className="
+                  className="
                     inline-flex
-                    px-8 py-2
-                    rounded-lg
+                    px-8 py-2.5
+                    rounded-xl
                     bg-green-600
                     hover:bg-green-500
+                    active:scale-95
                     transition
                     text-white
                     font-medium
+                    shadow-lg shadow-green-900/30
                     mt-4
                   "
                 >
@@ -300,6 +346,8 @@ export default async function Home() {
         )}
 
       </section>
+
+      </div>
 
     </main>
   )

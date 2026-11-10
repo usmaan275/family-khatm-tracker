@@ -3,6 +3,7 @@
 import { useEffect, useState, use, useRef } from "react"
 import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
+import { arabicFont } from "@/lib/fonts"
 
 type ElementData = {
   id: string
@@ -157,7 +158,9 @@ export default function EditPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#070B14] text-white p-6">
+    <main className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] text-white px-5 py-6">
+
+      <div className="mx-auto max-w-2xl">
 
       {/* Top Bar */}
       <div className="flex justify-between items-center mb-8">
@@ -170,64 +173,64 @@ export default function EditPage({
               router.refresh()
             }, 100)
           }}
-          className="w-22 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700"
+          className="w-22 py-2 rounded-xl bg-[#111827] text-gray-200 hover:bg-[#1F2937] hover:text-white hover:border-gray-600 active:scale-95 transition border border-[#1F2937]"
         >
           Back
         </button>
 
-        <h1 className="text-xl font-bold text-center">
+        <h1 className="text-xl font-bold tracking-tight text-center">
           Edit Khatm
         </h1>
 
         <button
           onClick={save}
           disabled={saving}
-          className="w-22 py-2 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition"
+          className="w-22 py-2 rounded-xl bg-green-600 hover:bg-green-500 active:scale-95 disabled:opacity-70 transition font-medium shadow-md shadow-green-900/30"
         >
           {saving ? "Saving..." : "Done"}
         </button>
       </div>
 
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="space-y-5">
 
         {/* Title */}
-        <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
+        <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5 shadow-lg shadow-black/30">
           <p className="text-sm text-gray-400 mb-2">Title</p>
           <input
             value={event.title}
             onChange={(e) => updateField("title", e.target.value)}
-            className="w-full bg-[#1F2937] p-3 rounded-xl text-white"
+            className="w-full bg-[#1F2937] border border-transparent p-3 rounded-xl text-white outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition"
           />
         </div>
 
         {/* Dhikr Text */}
         {event.type === "dhikr" && (
-          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 space-y-4">
+          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5 space-y-4 shadow-lg shadow-black/30">
             <p className="text-sm text-gray-400 mb-2">Dhikr Text</p>
             <input
               value={event.dhikr_text || ""}
               onChange={(e) => updateField("dhikr_text", e.target.value)}
-              className="w-full bg-[#1F2937] p-3 rounded-xl text-white"
+              className={`w-full bg-[#1F2937] border border-transparent p-3 rounded-xl text-white text-xl outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition ${arabicFont.className}`}
             />
           </div>
         )}
 
         {/* Target */}
         {event.type === "dhikr" && (
-          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
+          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5 shadow-lg shadow-black/30">
             <p className="text-sm text-gray-400 mb-2">Total Target Amount</p>
             <input
               type="text"
               inputMode="numeric"
               value={event.target ? Number(event.target).toLocaleString() : ""}
               onChange={(e) => updateTarget(Number(e.target.value.replace(/\D/g, "")))}
-              className="w-full bg-[#1F2937] p-3 rounded-xl text-white text-green-400"
+              className="w-full bg-[#1F2937] border border-transparent p-3 rounded-xl text-white text-green-400 font-semibold outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition"
             />
           </div>
         )}
 
         {/* CREATED DATE (3-part editor) */}
-        <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
+        <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5 shadow-lg shadow-black/30">
           <p className="text-sm text-gray-400 mb-3">Created At</p>
 
           <div className="grid grid-cols-3 gap-2">
@@ -242,7 +245,7 @@ export default function EditPage({
                   created ? created.getFullYear() : 2026
                 )
               }
-              className="bg-[#1F2937] p-2 rounded text-white"
+              className="bg-[#1F2937] border border-transparent px-3 py-2.5 rounded-xl text-white outline-none focus:border-green-500 transition"
             >
               {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                 <option key={day} value={day}>
@@ -261,7 +264,7 @@ export default function EditPage({
                   created ? created.getFullYear() : 2026
                 )
               }
-              className="bg-[#1F2937] p-2 rounded text-white"
+              className="bg-[#1F2937] border border-transparent px-3 py-2.5 rounded-xl text-white outline-none focus:border-green-500 transition"
             >
               {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                 <option key={month} value={month}>
@@ -280,7 +283,7 @@ export default function EditPage({
                   Number(e.target.value)
                 )
               }
-              className="bg-[#1F2937] p-2 rounded text-white"
+              className="bg-[#1F2937] border border-transparent px-3 py-2.5 rounded-xl text-white outline-none focus:border-green-500 transition"
             >
               {Array.from({ length: 100 }, (_, i) => 2000 + i).map((year) => (
                 <option key={year} value={year}>
@@ -294,7 +297,7 @@ export default function EditPage({
 
         {/* COMPLETED DATE (3-part editor) */}
         {event.status === "completed" && (
-          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
+          <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5 shadow-lg shadow-black/30">
             <p className="text-sm text-gray-400 mb-3">Completed At</p>
 
             <div className="grid grid-cols-3 gap-2">
@@ -309,7 +312,7 @@ export default function EditPage({
                     completed ? completed.getFullYear() : 2026
                   )
                 }
-                className="bg-[#1F2937] p-2 rounded text-white"
+                className="bg-[#1F2937] border border-transparent px-3 py-2.5 rounded-xl text-white outline-none focus:border-green-500 transition"
               >
                 {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                   <option key={day} value={day}>
@@ -328,7 +331,7 @@ export default function EditPage({
                     completed ? completed.getFullYear() : 2026
                   )
                 }
-                className="bg-[#1F2937] p-2 rounded text-white"
+                className="bg-[#1F2937] border border-transparent px-3 py-2.5 rounded-xl text-white outline-none focus:border-green-500 transition"
               >
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                   <option key={month} value={month}>
@@ -347,7 +350,7 @@ export default function EditPage({
                     Number(e.target.value)
                   )
                 }
-                className="bg-[#1F2937] p-2 rounded text-white"
+                className="bg-[#1F2937] border border-transparent px-3 py-2.5 rounded-xl text-white outline-none focus:border-green-500 transition"
               >
                 {Array.from({ length: 100 }, (_, i) => 2000 + i).map((year) => (
                   <option key={year} value={year}>
@@ -363,30 +366,30 @@ export default function EditPage({
         {/* Delete */}
         <button
           onClick={() => setShowDelete(true)}
-          className="w-full bg-[#5B1C1C] hover:bg-red-700 transition py-3 rounded-2xl"
+          className="w-full bg-[#5B1C1C] hover:bg-red-700 active:scale-[0.99] transition py-3.5 rounded-2xl font-medium"
         >
           Delete Khatm
         </button>
 
         {showDelete && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
-            <div className="bg-[#111827] p-6 rounded-2xl border border-[#1F2937] w-[90%] max-w-sm">
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+            <div className="bg-[#111827] p-6 rounded-2xl border border-[#1F2937] w-[90%] max-w-sm shadow-2xl shadow-black/50">
 
-              <p className="mb-4 text-center">
+              <p className="mb-5 text-center">
                 Are you sure you want to delete this khatm?
               </p>
 
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowDelete(false)}
-                  className="flex-1 py-3 rounded-2xl bg-[#1F2937] hover:bg-[#374151] transition font-semibold"
+                  className="flex-1 py-3 rounded-2xl bg-[#1F2937] hover:bg-[#374151] active:scale-[0.98] transition font-semibold"
                 >
                   No
                 </button>
 
                 <button
                   onClick={deleteEvent}
-                  className="flex-1 py-3 rounded-2xl bg-red-700 hover:bg-red-600 transition font-semibold"
+                  className="flex-1 py-3 rounded-2xl bg-red-700 hover:bg-red-600 active:scale-[0.98] transition font-semibold"
                 >
                   Yes
                 </button>
@@ -395,6 +398,8 @@ export default function EditPage({
             </div>
           </div>
         )}
+
+      </div>
 
       </div>
     </main>

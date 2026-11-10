@@ -152,7 +152,9 @@ export default function QuranPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#070B14] text-white p-6">
+    <main className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] text-white px-5 py-6">
+
+      <div className="mx-auto max-w-2xl">
 
       {/* Top Bar */}
       <div className="flex items-center justify-between">
@@ -161,7 +163,7 @@ export default function QuranPage({
         <button
           onClick={() => handleDone("back")}
           disabled={returning}
-          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white disabled:opacity-70 transition border border-gray-700"
+          className="w-12 h-10 rounded-xl bg-[#111827] text-gray-200 hover:bg-[#1F2937] hover:text-white hover:border-gray-600 active:scale-95 disabled:opacity-70 transition border border-[#1F2937]"
         >
           {returning ? (
             "..."
@@ -174,7 +176,7 @@ export default function QuranPage({
         <button
           onClick={() => handleDone("done")}
           disabled={saving}
-          className="w-22 h-10 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+          className="w-22 h-10 rounded-xl bg-green-600 hover:bg-green-500 active:scale-95 disabled:opacity-70 transition text-white font-medium shadow-md shadow-green-900/30"
         >
           {saving ? "Saving..." : "Done"}
         </button>
@@ -182,14 +184,24 @@ export default function QuranPage({
       </div>
 
       {/* Title */}
-      <h1 className="text-2xl font-bold mt-3">
+      <h1 className="text-2xl font-bold tracking-tight mt-6">
         {khatmTitle || "Quran Khatm"}
       </h1>
 
       {/* Progress */}
-      <p className="text-green-400 mt-1">
+      <p className="text-green-400 mt-1 font-medium">
         {juzList.filter((j) => j.completed).length} / 30 completed
       </p>
+
+      {/* Progress bar */}
+      <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#1F2937]">
+        <div
+          className="h-full rounded-full bg-green-500 transition-all duration-500"
+          style={{
+            width: `${(juzList.filter((j) => j.completed).length / 30) * 100}%`,
+          }}
+        />
+      </div>
 
       {/* Allocation Status */}
       {(() => {
@@ -217,7 +229,7 @@ export default function QuranPage({
         }
 
         return (
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-gray-400 text-sm mt-3">
             There{" "}
             {unallocated.length === 1
               ? "is"
@@ -238,20 +250,20 @@ export default function QuranPage({
       })()}
 
       {/* List */}
-      <div className="space-y-3 mt-4">
+      <div className="space-y-3 mt-6">
 
         {juzList.map((juz) => (
 
           <div
             key={juz.id}
-            className={`rounded-2xl p-4 flex items-center gap-3 border transition ${juz.completed
+            className={`rounded-2xl p-3 pl-4 flex items-center gap-3 border shadow-md shadow-black/20 transition ${juz.completed
               ? "bg-green-900/20 border-green-700"
               : "bg-[#111827] border-[#1F2937]"
               }`}
           >
 
             {/* Juz */}
-            <div className="w-16 font-semibold">
+            <div className="w-16 shrink-0 font-semibold">
               Juz {juz.juz_number}
             </div>
 
@@ -265,7 +277,7 @@ export default function QuranPage({
                   e.target.value
                 )
               }
-              className="flex-1 p-2 rounded bg-[#1F2937] text-white"
+              className="flex-1 min-w-0 px-3 py-2.5 rounded-xl bg-[#1F2937] border border-transparent text-white placeholder-gray-500 outline-none focus:border-green-500 transition"
               placeholder="Name"
             />
 
@@ -279,7 +291,7 @@ export default function QuranPage({
                   e.target.checked
                 )
               }
-              className="w-5 h-5 accent-green-600"
+              className="w-6 h-6 mr-1 shrink-0 cursor-pointer accent-green-600"
             />
 
           </div>
@@ -291,12 +303,14 @@ export default function QuranPage({
           <button
             onClick={() => handleDone("done")}
             disabled={saving}
-            className="w-full bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold disabled:opacity-70"
+            className="w-full bg-green-600 hover:bg-green-500 active:scale-[0.99] transition py-3.5 rounded-xl font-semibold shadow-lg shadow-green-900/30 disabled:opacity-70"
           >
             {saving ? "Saving..." : "Done"}
           </button>
 
         </div>
+
+      </div>
 
       </div>
 

@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+import { arabicFont } from "@/lib/fonts"
 
 type Contribution = {
   id: string
@@ -221,7 +222,9 @@ export default function DhikrPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#070B14] text-white p-6">
+    <main className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] text-white px-5 py-6">
+
+      <div className="mx-auto max-w-2xl">
 
       {/* Top Bar */}
       <div className="flex items-center justify-between">
@@ -234,7 +237,7 @@ export default function DhikrPage({
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={returning}
-          className="w-12 h-10 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white disabled:opacity-70 transition border border-gray-700"
+          className="w-12 h-10 rounded-xl bg-[#111827] text-gray-200 hover:bg-[#1F2937] hover:text-white hover:border-gray-600 active:scale-95 disabled:opacity-70 transition border border-[#1F2937]"
         >
           {returning ? (
             "..."
@@ -251,7 +254,7 @@ export default function DhikrPage({
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
-          className="w-22 h-10 rounded-lg bg-green-600 hover:bg-green-500 disabled:opacity-70 transition text-white font-medium"
+          className="w-22 h-10 rounded-xl bg-green-600 hover:bg-green-500 active:scale-95 disabled:opacity-70 transition text-white font-medium shadow-md shadow-green-900/30"
         >
           {leaving ? "Saving..." : "Done"}
         </button>
@@ -259,20 +262,30 @@ export default function DhikrPage({
       </div>
 
       {/* Header */}
-      <div className="mb-8 mt-4">
+      <div className="mb-8 mt-6 p-5 rounded-2xl bg-[#111827] border border-[#1F2937] shadow-lg shadow-black/30">
 
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold tracking-tight">
           {event.title}
         </h1>
 
-        <p className="text-gray-400 mt-1">
+        <p className={`text-gray-400 mt-2 text-2xl leading-loose ${arabicFont.className}`}>
           {event.dhikr_text}
         </p>
 
-        <p className="text-green-400 mt-3 text-lg">
+        <p className="text-green-400 mt-3 text-lg font-semibold">
           {total.toLocaleString()} /{" "}
           {event.target.toLocaleString()}
         </p>
+
+        {/* Progress bar */}
+        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#1F2937]">
+          <div
+            className="h-full rounded-full bg-green-500 transition-all duration-500"
+            style={{
+              width: `${Math.min(100, (total / event.target) * 100)}%`,
+            }}
+          />
+        </div>
 
       </div>
 
@@ -313,7 +326,7 @@ export default function DhikrPage({
                         damping: 30,
                       },
                     }}
-                    className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4 flex items-center gap-3"
+                    className="bg-[#111827] border border-[#1F2937] rounded-2xl p-3 flex items-center gap-3 shadow-md shadow-black/20"
                   >
 
                     {/* Name */}
@@ -340,7 +353,7 @@ export default function DhikrPage({
                           )
                         setContributions(updated)
                       }}
-                      className="flex-[1.4] min-w-0 bg-[#1F2937] rounded-xl p-2 text-white"
+                      className="flex-[1.4] min-w-0 bg-[#1F2937] border border-transparent rounded-xl px-3 py-2.5 text-white outline-none focus:border-green-500 transition"
                     />
 
                     {/* Amount */}
@@ -381,7 +394,7 @@ export default function DhikrPage({
                           )
                         setContributions(updated)
                       }}
-                      className="w-24 bg-[#1F2937] rounded-xl p-2 text-green-400 text-right"
+                      className="w-24 bg-[#1F2937] border border-transparent rounded-xl px-3 py-2.5 text-green-400 font-semibold text-right outline-none focus:border-green-500 transition"
                     />
 
                     {/* Tasbih */}
@@ -391,7 +404,7 @@ export default function DhikrPage({
                           `/dhikr/${id}/${entry.id}`
                         )
                       }
-                      className="bg-green-600 hover:bg-green-500 transition px-3 py-2 rounded-xl font-semibold whitespace-nowrap"
+                      className="bg-green-600 hover:bg-green-500 active:scale-95 transition px-3 py-2.5 rounded-xl font-semibold whitespace-nowrap shadow-md shadow-green-900/30"
                     >
                       📿
                     </button>
@@ -405,9 +418,9 @@ export default function DhikrPage({
       </div>
 
       {/* Add Contribution */}
-      <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-4">
+      <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5 shadow-lg shadow-black/30">
 
-        <h2 className="font-semibold mb-4">
+        <h2 className="font-semibold text-lg mb-4">
           Add Contribution
         </h2>
 
@@ -419,7 +432,7 @@ export default function DhikrPage({
           onChange={(e) =>
             setNewName(e.target.value)
           }
-          className="w-full p-3 mb-3 rounded-xl bg-[#1F2937] text-white"
+          className="w-full p-3.5 mb-3 rounded-xl bg-[#1F2937] border border-transparent text-white placeholder-gray-500 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition"
         />
 
         {/* Amount */}
@@ -438,7 +451,7 @@ export default function DhikrPage({
               e.preventDefault()
             }
           }}
-          className="w-full p-3 mb-4 rounded-xl bg-[#1F2937] text-white"
+          className="w-full p-3.5 mb-4 rounded-xl bg-[#1F2937] border border-transparent text-white placeholder-gray-500 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition"
         />
 
         {/* Buttons */}
@@ -450,7 +463,7 @@ export default function DhikrPage({
               const current = Number(newAmount || 0)
               setNewAmount(String(current + 1))
             }}
-            className="flex-1 bg-[#1F2937] hover:bg-[#374151] transition py-3 rounded-xl font-semibold"
+            className="flex-1 bg-[#1F2937] hover:bg-[#374151] active:scale-[0.98] transition py-3 rounded-xl font-semibold"
           >
             +1
           </button>
@@ -459,7 +472,7 @@ export default function DhikrPage({
           <button
             onClick={addContribution}
             disabled={saving}
-            className="flex-1 bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold disabled:opacity-70"
+            className="flex-1 bg-green-600 hover:bg-green-500 active:scale-[0.98] transition py-3 rounded-xl font-semibold shadow-md shadow-green-900/30 disabled:opacity-70"
           >
             {saving ? "Adding..." : "Add"}
           </button>
@@ -478,10 +491,12 @@ export default function DhikrPage({
             setTimeout(() => router.refresh(), 100)
           }}
           disabled={leaving}
-          className="w-full bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-semibold disabled:opacity-70"
+          className="w-full bg-green-600 hover:bg-green-500 active:scale-[0.99] transition py-3.5 rounded-xl font-semibold shadow-lg shadow-green-900/30 disabled:opacity-70"
         >
           {leaving ? "Saving..." : "Done"}
         </button>
+
+      </div>
 
       </div>
 

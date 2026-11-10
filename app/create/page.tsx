@@ -77,7 +77,9 @@ export default function CreatePage() {
   }
 
   return (
-    <main className="min-h-screen p-6 bg-[#070B14] text-white">
+    <main className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] px-5 py-6 text-white">
+
+      <div className="mx-auto max-w-2xl">
 
       {/* Back */}
       <button
@@ -88,20 +90,20 @@ export default function CreatePage() {
             router.back()
           }, 100)
         }}
-        className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700 mb-4"
+        className="px-4 py-2 rounded-xl bg-[#111827] text-gray-200 hover:bg-[#1F2937] hover:text-white active:scale-95 transition border border-[#1F2937] hover:border-gray-600 mb-6"
       >
         Back
       </button>
 
-      <h1 className="text-2xl font-bold mb-6">
+      <h1 className="text-2xl font-bold tracking-tight mb-6">
         Create New Ibadah Event
       </h1>
 
       {/* Type Selector */}
-      <div className="flex gap-4 mb-6">
+      <div className="grid grid-cols-2 gap-1 p-1 mb-6 rounded-xl bg-[#111827] border border-[#1F2937]">
         <button
           onClick={() => setType("quran")}
-          className={`px-4 py-2 rounded ${type === "quran" ? "bg-green-600 text-white" : "bg-[#1F2937] text-gray-300"
+          className={`px-4 py-2.5 rounded-lg font-medium transition ${type === "quran" ? "bg-green-600 text-white shadow-md shadow-green-900/30" : "text-gray-400 hover:text-white hover:bg-[#1F2937]"
             }`}
         >
           Quran Khatm
@@ -109,7 +111,7 @@ export default function CreatePage() {
 
         <button
           onClick={() => setType("dhikr")}
-          className={`px-4 py-2 rounded ${type === "dhikr" ? "bg-green-600 text-white" : "bg-[#1F2937] text-gray-300"
+          className={`px-4 py-2.5 rounded-lg font-medium transition ${type === "dhikr" ? "bg-green-600 text-white shadow-md shadow-green-900/30" : "text-gray-400 hover:text-white hover:bg-[#1F2937]"
             }`}
         >
           Dhikr Khatm
@@ -118,7 +120,7 @@ export default function CreatePage() {
 
       {/* Title */}
       <input
-        className="w-full p-3 mb-4 rounded-xl bg-[#111827] border border-[#1F2937] text-white placeholder-gray-400"
+        className="w-full p-3.5 mb-4 rounded-xl bg-[#111827] border border-[#1F2937] text-white placeholder-gray-500 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition"
         placeholder="Title (e.g. Family Khatm for Mum)"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -128,7 +130,7 @@ export default function CreatePage() {
       {type === "dhikr" && (
         <>
           <input
-            className="w-full p-3 mb-4 rounded-xl bg-[#111827] border border-[#1F2937] text-white placeholder-gray-400"
+            className="w-full p-3.5 mb-4 rounded-xl bg-[#111827] border border-[#1F2937] text-white placeholder-gray-500 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition"
             placeholder="Dhikr text (e.g. SubhanAllah)"
             value={dhikrText}
             onChange={(e) => setDhikrText(e.target.value)}
@@ -137,7 +139,7 @@ export default function CreatePage() {
           <input
             type="text"
             inputMode="numeric"
-            className="w-full p-3 mb-4 rounded-xl bg-[#111827] border border-[#1F2937] text-white placeholder-gray-400"
+            className="w-full p-3.5 mb-4 rounded-xl bg-[#111827] border border-[#1F2937] text-white placeholder-gray-500 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition"
             placeholder="Target amount (e.g. 70000)"
             value={target ? Number(target).toLocaleString() : ""}
             onChange={(e) => setTarget(e.target.value.replace(/\D/g, ""))}
@@ -148,11 +150,13 @@ export default function CreatePage() {
       {/* Create button */}
       <button
         onClick={handleCreate}
-        className="w-full bg-green-600 hover:bg-green-500 transition text-white py-3 rounded-xl shadow-lg disabled:opacity-70"
+        className="w-full bg-green-600 hover:bg-green-500 active:scale-[0.99] transition text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-green-900/30 disabled:opacity-70"
         disabled={creating}
       >
         {creating ? "Creating..." : "Create"}
       </button>
+
+      </div>
 
     </main>
   )

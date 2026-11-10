@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
+import { arabicFont } from "@/lib/fonts"
 
 type Element = {
   id: string
@@ -84,8 +85,17 @@ export default function CompletedPage() {
     )
   }
 
+  /* Visual only: width of the progress bar */
+  function getPercent(item: Element) {
+    if (item.type === "quran") {
+      return Math.min(100, (getQuranProgress(item.id) / 30) * 100)
+    }
+    if (!item.target) return 0
+    return Math.min(100, (getDhikrTotal(item.id) / item.target) * 100)
+  }
+
   const cleanText = (text : string) => {
-    const tashkeelRegex = /[ًٌٍَُِّْٰۡٓ]/g; // Tashkeel and diacritics
+    const tashkeelRegex = /[ًٌٍَُِّْٰۡٓ]/g; // Tashkeel and diacritics
     const specialSymbolsRegex = /[ۖۗۘۙۚۛۜ۝۞ـ]/g; // Remove any special symbols
     return text.replace(tashkeelRegex, '').replace(specialSymbolsRegex, '').replace(/[أإآٱ]/g, 'ا').replace(/ه/g, 'ة').replace(/ت/g, 'ة').replace('  ',' ').trim();
   };
@@ -156,7 +166,9 @@ export default function CompletedPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#070B14] text-white p-6">
+    <main className="min-h-screen bg-[#070B14] bg-[radial-gradient(ellipse_70%_35%_at_50%_0%,rgba(22,163,74,0.12),transparent)] text-white px-5 py-6">
+
+      <div className="mx-auto max-w-2xl">
 
       {/* Back */}
       <button
@@ -167,17 +179,17 @@ export default function CompletedPage() {
             router.back()
           }, 100)
         }}
-        className="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 hover:text-white transition border border-gray-700 mb-4"
+        className="px-4 py-2 rounded-xl bg-[#111827] text-gray-200 hover:bg-[#1F2937] hover:text-white active:scale-95 transition border border-[#1F2937] hover:border-gray-600 mb-6"
       >
         Back
       </button>
 
-      <h1 className="text-2xl font-bold mb-6">
+      <h1 className="text-2xl font-bold tracking-tight mb-6">
         Completed Khatms ({filtered.length})
       </h1>
 
       {/* Controls */}
-      <div className="flex flex-col md:flex-row gap-3 mb-6">
+      <div className="flex flex-col md:flex-row gap-3 mb-8">
 
         <input
           type="text"
@@ -190,10 +202,13 @@ export default function CompletedPage() {
             flex-1
             bg-[#111827]
             border border-[#1F2937]
+            placeholder-gray-500
             rounded-xl
             px-4 py-3
             outline-none
             focus:border-green-500
+            focus:ring-2 focus:ring-green-500/20
+            transition
           "
         />
 
@@ -209,6 +224,8 @@ export default function CompletedPage() {
             px-4 py-3
             outline-none
             focus:border-green-500
+            focus:ring-2 focus:ring-green-500/20
+            transition
           "
         >
           <option value="completed_desc">
@@ -238,11 +255,13 @@ export default function CompletedPage() {
           <div
             key={item.id}
             className="
-              p-4
+              p-5
               bg-[#111827]
               border border-[#1F2937]
               rounded-2xl
+              shadow-lg shadow-black/30
               opacity-70
+              hover:opacity-100
               hover:border-green-600
               transition-all duration-300
             "
@@ -258,7 +277,7 @@ export default function CompletedPage() {
                 }
                 className="flex-1"
               >
-                <h3 className="font-semibold text-lg">
+                <h3 className="font-semibold text-lg leading-snug">
                   {item.title}
                 </h3>
               </Link>
@@ -266,10 +285,12 @@ export default function CompletedPage() {
               <Link
                 href={`/edit/${item.id}`}
                 className="
-                  px-3 py-2
+                  px-3 py-1.5
                   rounded-lg
                   bg-green-600
                   hover:bg-green-500
+                  active:scale-95
+                  shadow-md shadow-green-900/30
                   transition
                   text-xs
                   font-semibold
@@ -287,9 +308,16 @@ export default function CompletedPage() {
                   ? `/quran/${item.id}`
                   : `/dhikr/${item.id}`
               }
+              className="block"
             >
 
-              <p className="text-sm text-gray-400 mt-1">
+              <p
+                className={`mt-1 text-gray-400 ${
+                  item.type === "quran"
+                    ? "text-sm"
+                    : `${arabicFont.className} text-xl leading-relaxed`
+                }`}
+              >
                 {item.type === "quran"
                   ? "Quran Khatm"
                   : item.dhikr_text}
@@ -297,43 +325,55 @@ export default function CompletedPage() {
 
               {/* Quran Progress */}
               {item.type === "quran" && (
-                <p className="text-sm mt-2 text-green-400">
+                <p className="text-sm mt-3 text-green-400 font-medium">
                   {getQuranProgress(item.id)} / 30 completed
                 </p>
               )}
 
               {/* Dhikr Progress */}
               {item.type === "dhikr" && (
-                <p className="text-sm mt-2 text-green-400">
+                <p className="text-sm mt-3 text-green-400 font-medium">
                   {getDhikrTotal(item.id).toLocaleString()} /{" "}
                   {item.target?.toLocaleString()}
                 </p>
               )}
 
-              <p className="text-xs mt-3 text-gray-500">
-                Created:{" "}
-                {new Date(item.created_at).toLocaleString("en-GB", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric"
-                })}
-              </p>
+              {/* Progress bar */}
+              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1F2937]">
+                <div
+                  className="h-full rounded-full bg-green-500"
+                  style={{ width: `${getPercent(item)}%` }}
+                />
+              </div>
 
-              <p className="text-xs mt-3 text-gray-500">
-                Completed:{" "}
-                {item.completed_at
-                  ? new Date(item.completed_at).toLocaleString("en-GB", {
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
+                <p className="text-xs text-gray-500">
+                  Created:{" "}
+                  {new Date(item.created_at).toLocaleString("en-GB", {
                     day: "2-digit",
                     month: "long",
                     year: "numeric"
-                  })
-                  : "—"}
-              </p>
+                  })}
+                </p>
+
+                <p className="text-xs text-gray-500">
+                  Completed:{" "}
+                  {item.completed_at
+                    ? new Date(item.completed_at).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric"
+                    })
+                    : "—"}
+                </p>
+              </div>
 
             </Link>
 
           </div>
         ))}
+
+      </div>
 
       </div>
 
