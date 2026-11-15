@@ -31,6 +31,8 @@ export default function CompletedPage() {
 
   const [sort, setSort] = useState("completed_desc")
 
+  const [typeFilter, setTypeFilter] = useState<"all" | "quran" | "dhikr">("all")
+
   useEffect(() => {
     fetchData()
   }, [])
@@ -102,7 +104,9 @@ export default function CompletedPage() {
 
   const filtered = useMemo(() => {
 
-    let items = [...events]
+    let items = events.filter(
+      (e) => typeFilter === "all" || e.type === typeFilter
+    )
 
     if (search.trim()) {
 
@@ -152,7 +156,7 @@ export default function CompletedPage() {
 
     return items
 
-  }, [events, search, sort])
+  }, [events, search, sort, typeFilter])
 
   if (loading) {
     return (
@@ -187,6 +191,29 @@ export default function CompletedPage() {
       <h1 className="text-2xl font-bold tracking-tight mb-6">
         Completed Khatms ({filtered.length})
       </h1>
+
+      {/* Type filter */}
+      <div className="grid grid-cols-3 gap-1 p-1 mb-4 rounded-xl bg-[#111827] border border-[#1F2937]">
+        {(
+          [
+            ["all", "All Khatms"],
+            ["quran", "Quran Khatms"],
+            ["dhikr", "Dhikr Khatms"],
+          ] as const
+        ).map(([value, label]) => (
+          <button
+            key={value}
+            onClick={() => setTypeFilter(value)}
+            className={`px-2 py-2.5 rounded-lg text-sm font-medium transition ${
+              typeFilter === value
+                ? "bg-green-600 text-white shadow-md shadow-green-900/30"
+                : "text-gray-400 hover:text-white hover:bg-[#1F2937]"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
       {/* Controls */}
       <div className="flex flex-col md:flex-row gap-3 mb-8">
